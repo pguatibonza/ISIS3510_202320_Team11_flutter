@@ -4,6 +4,16 @@ void main() {
   runApp(const MainApp());
 }
 
+class Singleton {
+  Singleton._private();
+
+  static final Singleton _instance = Singleton._private();
+
+  factory Singleton() {
+    return _instance;
+  }
+}
+
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
