@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:tucamion/add_pickup.dart';
-import 'package:tucamion/add_trip.dart';
+import 'package:tucamion/add_accesspoint.dart';
 import 'package:tucamion/constants/api.dart';
 import 'package:tucamion/models/access_point.dart';
 import 'package:tucamion/models/load.dart';
@@ -228,7 +227,7 @@ class LoadButton extends StatelessWidget {
       highlightElevation: 0,
       child : Icon(Icons.add),
       onPressed: (){
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddPickup() ));
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddAccessPoint(pointType: 1) ));
     },
     );
   }
