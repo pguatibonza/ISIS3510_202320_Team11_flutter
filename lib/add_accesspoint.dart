@@ -1,25 +1,36 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tucamion/add_load.dart';
 import 'package:tucamion/constants/api.dart';
 import 'package:tucamion/models/access_point.dart';
 
-class AddPickup extends StatelessWidget {
-  final pickupId=0;
-  const AddPickup({super.key});
+class AddAccessPoint extends StatelessWidget {
+  final int pointType;
+
+  const AddAccessPoint({required this.pointType, super.key});
+  
 
   @override
   Widget build(BuildContext context) {
+    String _text = "";
+    if (pointType == 1) {
+      _text = "Add pickup";
+    } else {
+      _text = "Add dropoff";
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Pickup'),
+        title: Text(_text),
       ),
-      body: AccessPointForm(),
+      body: AccessPointForm(pointType: pointType),
     );
   }
 }
+
 class AccessPointForm extends StatefulWidget {
-  const AccessPointForm({super.key});
+  final int pointType;
+  const AccessPointForm({required this.pointType, super.key});
 
   @override
   State<AccessPointForm> createState() => _AccessPointFormState();
@@ -78,7 +89,6 @@ class _AccessPointFormState extends State<AccessPointForm> {
               child: Text('After '),
             ),
             SizedBox(height: 16),
-        
             SizedBox(height: 8),
             ElevatedButton(
               onPressed: () => _selectDateAndTime(2),
@@ -86,7 +96,21 @@ class _AccessPointFormState extends State<AccessPointForm> {
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: post,
+              onPressed: () {
+                Future<int> accessPointId = post();
+                if (widget.pointType == 1) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              AddAccessPoint(pointType: 2)));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => AddLoad()));
+                }
+              },
               child: Text('Submit'),
             ),
           ],
@@ -95,46 +119,38 @@ class _AccessPointFormState extends State<AccessPointForm> {
     );
   }
 
-  Future<int>  post()   async {
-              var pickupId=0;
-              print("Posting data");
-              if (_formKey.currentState!.validate()) {
-                // Form is valid, process the data
-                  try{
-                    http.Response response= await http.post(
-                      Uri.parse(accessPoints),
-                      headers:<String,String>{
-                        'Content-Type':'application/json; charset=UTF-8',
-                        
-                      },
-                      body: jsonEncode(<String,String>{
-                        "country": _countryController.text,
-                        "city": _cityController.text,
-                        "address": _addressController.text,
-                        "after": _dateTime1.toString() ,
-                        "before": _dateTime2.toString(),
-                      })
-                    );
-                    if (response.statusCode== 201 ){
-                      setState(() {
-                         pickupId = json.decode(response.body)["id"];
-                      });
+  Future<int> post() async {
+    var id = 0;
+    print("Posting data");
+    if (_formKey.currentState!.validate()) {
+      // Form is valid, process the data
+      try {
+        http.Response response = await http.post(Uri.parse(accessPoints),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              "country": _countryController.text,
+              "city": _cityController.text,
+              "address": _addressController.text,
+              "after": _dateTime1.toString(),
+              "before": _dateTime2.toString(),
+            }));
+        if (response.statusCode == 201) {
+          setState(() {
+            id = json.decode(response.body)["id"];
+          });
+        } else {
+          print("AccessPoint not created");
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
 
-                    }
-                    else {
-                      print("AccessPoint not created");
-                    }
-                  }
-
-                  catch(e){
-                    print(e);
-                }
-                
-              
-            }
-            return pickupId;
-            
+    return id;
   }
+
   Future<void> _selectDateAndTime(int index) async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
@@ -172,5 +188,4 @@ class _AccessPointFormState extends State<AccessPointForm> {
       }
     }
   }
-  
 }
