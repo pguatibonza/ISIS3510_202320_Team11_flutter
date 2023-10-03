@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tucamion/pages/landing.dart';
 import 'package:tucamion/theme/app_theme.dart';
 
 void main() => runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: TuCamionTheme.lightTheme(),
       home: const Scaffold(
         body: SingleChildScrollView(
-          child: Text(""),
+          child: Landing(),
         ),
       ),
     );

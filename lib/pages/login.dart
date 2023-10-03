@@ -1,0 +1,255 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class LogIn extends StatelessWidget {
+  const LogIn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    double baseWidth = 360;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double ffem = fem * 0.97;
+    return SizedBox(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height,
+      child: Container(
+        // loginZVR (17:588)
+        padding: EdgeInsets.fromLTRB(37 * fem, 143 * fem, 38 * fem, 123 * fem),
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Color(0xffffffff),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              // welcomebackGud (17:592)
+              margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 32 * fem),
+              child: Text(
+                'Welcome Back!',
+                style: GoogleFonts.montserrat(
+                  fontSize: 24 * ffem,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2000000477 * ffem / fem,
+                  color: const Color(0xff232323),
+                ),
+              ),
+            ),
+            Container(
+              // frame379iX (17:589)
+              margin: EdgeInsets.fromLTRB(3 * fem, 0 * fem, 7 * fem, 29 * fem),
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    // inputseX (17:590)
+                    margin: EdgeInsets.fromLTRB(
+                        0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30 * fem),
+                      color: const Color(0xffefebeb),
+                    ),
+                    child: TextField(
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.fromLTRB(
+                            15.5 * fem, 17.5 * fem, 15.5 * fem, 17.5 * fem),
+                        hintText: 'Email',
+                        hintStyle: const TextStyle(color: Color(0xff444444)),
+                      ),
+                      style: GoogleFonts.montserrat(
+                        fontSize: 14 * ffem,
+                        fontWeight: FontWeight.w400,
+                        height: 1.2000000817 * ffem / fem,
+                        color: const Color(0xff000000),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    // inputiQF (17:591)
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30 * fem),
+                      color: const Color(0xffefebeb),
+                    ),
+                    child: TextField(
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.fromLTRB(
+                            16 * fem, 16 * fem, 16 * fem, 16 * fem),
+                        hintText: 'Password',
+                        hintStyle: const TextStyle(color: Color(0xff444444)),
+                      ),
+                      style: GoogleFonts.montserrat(
+                        fontSize: 14 * ffem,
+                        fontWeight: FontWeight.w400,
+                        height: 1.2000000817 * ffem / fem,
+                        color: const Color(0xff000000),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              // frame339VZ (17:593)
+              margin: EdgeInsets.fromLTRB(3 * fem, 0 * fem, 7 * fem, 50 * fem),
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    // frame3369u (17:594)
+                    margin: EdgeInsets.fromLTRB(
+                        0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                    child: TextButton(
+                      onPressed: () {},
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 49 * fem,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35 * fem),
+                          gradient: const LinearGradient(
+                            begin: Alignment(1, -0),
+                            end: Alignment(-1, 0),
+                            colors: <Color>[
+                              Color(0xff2d7eff),
+                              Color(0xff2faaff),
+                              Color(0xff2faaff)
+                            ],
+                            stops: <double>[0, 1, 1],
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Log In',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 14 * ffem,
+                              fontWeight: FontWeight.w700,
+                              height: 1.2175 * ffem / fem,
+                              color: const Color(0xffffffff),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Text(
+                      // forgotpasswordfcK (17:595)
+                      'Forgot password?',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 14 * ffem,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2175 * ffem / fem,
+                        color: const Color(0xff2e85ff),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              // line10Q47 (17:596)
+              margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 15 * fem),
+              width: double.infinity,
+              height: 1 * fem,
+              decoration: const BoxDecoration(
+                color: Color(0xffd9d9d9),
+              ),
+            ),
+            Container(
+              // donthaveanaccountsignup8ko (17:597)
+              margin: EdgeInsets.fromLTRB(2 * fem, 0 * fem, 0 * fem, 0 * fem),
+              child: TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                ),
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: GoogleFonts.montserrat(
+                      fontSize: 14 * ffem,
+                      fontWeight: FontWeight.w400,
+                      height: 1.2189999989 * ffem / fem,
+                      color: const Color(0xff232323),
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Don\'t ',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2175 * ffem / fem,
+                          color: const Color(0xff232323),
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'have',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2175 * ffem / fem,
+                          color: const Color(0xff232323),
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' an account?',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2175 * ffem / fem,
+                          color: const Color(0xff232323),
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' ',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2175 * ffem / fem,
+                          color: const Color(0xff232323),
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Sign up',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2175 * ffem / fem,
+                          color: const Color(0xff2e85ff),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
