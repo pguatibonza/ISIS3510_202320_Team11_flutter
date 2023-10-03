@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tucamion/api/cognitoauthservices.dart';
+import 'package:tucamion/controller/cognitoauthservices.dart';
 
 void main() {
   final authService = CognitoAuthService();

@@ -1,5 +1,5 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tucamion/theme/app_colors.dart';
+import 'package:tucamion/views/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppTextStyles {

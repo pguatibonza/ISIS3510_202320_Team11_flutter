@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tucamion/views/add_load.dart';
-import 'package:tucamion/constants/api.dart';
+import 'package:tucamion/controller/api.dart';
 import 'package:tucamion/models/access_point.dart';
 
 class AddAccessPoint extends StatelessWidget {

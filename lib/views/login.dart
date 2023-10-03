@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tucamion/pages/signup.dart';
+import 'package:tucamion/views/roles.dart';
+import 'package:tucamion/views/theme/app_colors.dart';
+import 'package:tucamion/controller/usercontroller.dart';
 
-class LogIn extends StatelessWidget {
+class LogIn extends StatefulWidget {
   const LogIn({super.key});
+
+  @override
+  State<LogIn> createState() {
+    return _LogInState();
+  }
+}
+
+class _LogInState extends State<LogIn> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +70,7 @@ class LogIn extends StatelessWidget {
                         color: const Color(0xffefebeb),
                       ),
                       child: TextField(
+                        controller: _emailController,
                         maxLines: null,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -85,7 +99,9 @@ class LogIn extends StatelessWidget {
                         color: const Color(0xffefebeb),
                       ),
                       child: TextField(
-                        maxLines: null,
+                        obscureText: true,
+                        controller: _passwordController,
+                        maxLines: 1,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -105,6 +121,15 @@ class LogIn extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (_errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(_errorMessage!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(color: error)),
+                      ),
                   ],
                 ),
               ),
@@ -121,7 +146,20 @@ class LogIn extends StatelessWidget {
                       margin: EdgeInsets.fromLTRB(
                           0 * fem, 0 * fem, 0 * fem, 16 * fem),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          bool success = await UserController().authenticate(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
+                          if (success) {
+                            // Navigate to another page or show a success message
+                            print("Login successful!");
+                          } else {
+                            setState(() {
+                              _errorMessage = "Invalid email or password";
+                            });
+                          }
+                        },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                         ),
@@ -176,7 +214,7 @@ class LogIn extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
+                      MaterialPageRoute(builder: (context) => const Roles()),
                     );
                   },
                   style: TextButton.styleFrom(
