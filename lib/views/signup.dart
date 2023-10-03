@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tucamion/pages/login.dart';
+import 'package:tucamion/views/login.dart';
+import 'package:tucamion/controller/usercontroller.dart';
+import 'package:tucamion/views/theme/app_colors.dart';
 
-class SignUp extends StatelessWidget {
-  const SignUp({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key, required this.role});
+  final String role;
+
+  @override
+  State<SignUp> createState() {
+    return _SignUpState();
+  }
+}
+
+class _SignUpState extends State<SignUp> {
+  final UserController _userController = UserController();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +80,7 @@ class SignUp extends StatelessWidget {
                               color: const Color(0xffefebeb),
                             ),
                             child: TextField(
+                              controller: _nameController,
                               maxLines: null,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -92,6 +113,7 @@ class SignUp extends StatelessWidget {
                               color: const Color(0xffefebeb),
                             ),
                             child: TextField(
+                              controller: _emailController,
                               maxLines: null,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -124,7 +146,9 @@ class SignUp extends StatelessWidget {
                               color: const Color(0xffefebeb),
                             ),
                             child: TextField(
+                              controller: _phoneController,
                               maxLines: null,
+                              keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -156,7 +180,9 @@ class SignUp extends StatelessWidget {
                               color: const Color(0xffefebeb),
                             ),
                             child: TextField(
-                              maxLines: null,
+                              controller: _passwordController,
+                              obscureText: true,
+                              maxLines: 1,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -188,7 +214,9 @@ class SignUp extends StatelessWidget {
                               color: const Color(0xffefebeb),
                             ),
                             child: TextField(
-                              maxLines: null,
+                              controller: _passwordConfirmController,
+                              obscureText: true,
+                              maxLines: 1,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -209,6 +237,15 @@ class SignUp extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(_errorMessage!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall!
+                                      .copyWith(color: error)),
+                            ),
                         ],
                       ),
                     ),
@@ -218,7 +255,7 @@ class SignUp extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: _signUp,
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                             ),
@@ -319,5 +356,33 @@ class SignUp extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _signUp() async {
+    String name = _nameController.text;
+    String email = _emailController.text;
+    String phone = _phoneController.text;
+    String password = _passwordController.text;
+    String confirmPassword = _passwordConfirmController.text;
+
+    String result = await _userController.register(
+      name: name,
+      lastName: "",
+      email: email,
+      password: password,
+      passwordConfirmation: confirmPassword,
+      phone: phone,
+      userType: widget.role,
+    );
+
+    if (result == "ok") {
+      // Navigate to another screen or show a success message
+      print("correctly signed up");
+    } else {
+      // Set the error message and rebuild the widget
+      setState(() {
+        _errorMessage = result;
+      });
+    }
   }
 }

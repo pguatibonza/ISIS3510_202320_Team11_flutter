@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tucamion/pages/login.dart';
-import 'package:tucamion/pages/signup.dart';
+import 'package:tucamion/views/login.dart';
+import 'package:tucamion/views/roles.dart';
 
 class Landing extends StatelessWidget {
   const Landing({super.key});
@@ -145,8 +145,7 @@ class Landing extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const LogIn()),
+                            MaterialPageRoute(builder: (context) => LogIn()),
                           );
                         },
                         style: TextButton.styleFrom(
@@ -187,7 +186,7 @@ class Landing extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SignUp()),
+                              builder: (context) => const Roles()),
                         );
                       },
                       style: TextButton.styleFrom(
