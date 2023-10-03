@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tucamion/add_trip.dart';
 import 'package:tucamion/constants/api.dart';
 import 'package:tucamion/models/access_point.dart';
 import 'package:tucamion/models/load.dart';
@@ -93,67 +94,141 @@ class _HomePageState extends State<HomePage> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: ListView.builder(
-        itemCount: myTrips.length,
-        itemBuilder: (context,index){
-          var pickup=myAcessPoints.where((element) => element.id==myTrips[index].pickup).first;
-          var dropoff=myAcessPoints.where((element) => element.id==myTrips[index].dropoff).first;
-          var load=myLoads.where((element) => element.id==myTrips[index].load).first;
-          var pickup_date=DateTime(pickup.after.year,pickup.after.month,pickup.after.day);
-          var dropoff_date=DateTime(dropoff.after.year,dropoff.after.month,dropoff.after.day);
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 10,vertical:5),
-            child: Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0)
-                ),
-              child:Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 10,vertical:10),
-                child:Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(load.type),
-                        Text('${load.weight}'),
-                        Text('Pickup'),
-                        Text(pickup_date.toString()),
-                        Row(
-                          children: [
-                            Text(pickup.address),
-                            Text(pickup.city),
-                          ],
-                        ),
-
-                        Text('Dropoff'),
-                        Text(dropoff_date.toString()),
-        
-                        Row(
-                          children: [
-                            Text(dropoff.address),
-                            Text(dropoff.city),
-                          ],
-                        ),
-
-                      ],
-                    ),
-                    Text(myTrips[index].status)
-                    
-                  ],
-                )
-              ) ,
-              )
-            );  
-        },
-        )
-      );
+    return ListTrips(myTrips: myTrips, myAcessPoints: myAcessPoints, myLoads: myLoads);
       
+  }
+}
+
+class ListTrips extends StatelessWidget {
+  const ListTrips({
+    super.key,
+    required this.myTrips,
+    required this.myAcessPoints,
+    required this.myLoads,
+  });
+
+  final List<Trip> myTrips;
+  final List<AccessPoint> myAcessPoints;
+  final List<Load> myLoads;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: LoadButton() ,
+      bottomNavigationBar: NavigationBar(),
+      appBar: AppBar(),
+      body: ListBuilder(myTrips: myTrips, myAcessPoints: myAcessPoints, myLoads: myLoads)
+      );
+  }
+}
+
+class ListBuilder extends StatelessWidget {
+  const ListBuilder({
+    super.key,
+    required this.myTrips,
+    required this.myAcessPoints,
+    required this.myLoads,
+  });
+
+  final List<Trip> myTrips;
+  final List<AccessPoint> myAcessPoints;
+  final List<Load> myLoads;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: myTrips.length,
+      itemBuilder: (context,index){
+        var pickup=myAcessPoints.where((element) => element.id==myTrips[index].pickup).first;
+        var dropoff=myAcessPoints.where((element) => element.id==myTrips[index].dropoff).first;
+        var load=myLoads.where((element) => element.id==myTrips[index].load).first;
+        //var pickupDate=DateTime(pickup.after.year,pickup.after.month,pickup.after.day);
+        //var dropoffDate=DateTime(dropoff.after.year,dropoff.after.month,dropoff.after.day);
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(horizontal: 10,vertical:5),
+          child: Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0)
+              ),
+            child:Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 10,vertical:10),
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(load.type),
+                      Text('${load.weight} kgs '),
+                      SizedBox(height: 10),
+                      Text('Pickup'),
+                      Text(pickup.after.toString()),
+                      Row(
+                        children: [
+                          Text(pickup.address),
+                          Text(pickup.city),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Text('Dropoff'),
+                      Text(dropoff.before.toString()),
+      
+                      Row(
+                        children: [
+                          Text(dropoff.address),
+                          Text(dropoff.city),
+                        ],
+                      ),
+
+                    ],
+                  ),
+                  Text(myTrips[index].status)
+                  
+                ],
+              )
+            ) ,
+            )
+          );  
+      },
+      );
+  }
+}
+
+class NavigationBar extends StatelessWidget {
+  const NavigationBar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      items: [
+        BottomNavigationBarItem( icon : Icon(Icons.fire_truck), label : 'Trips'),
+        BottomNavigationBarItem( icon : Icon(Icons.settings),label :'Settings')
+      ],
+    );
+  }
+}
+
+class LoadButton extends StatelessWidget {
+  const LoadButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton( 
+      elevation: 0,
+      highlightElevation: 0,
+      child : Icon(Icons.add),
+      onPressed: (){
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddTrip() ));
+    },
+    );
   }
 }
