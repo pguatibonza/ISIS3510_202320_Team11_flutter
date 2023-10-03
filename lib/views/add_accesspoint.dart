@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:tucamion/add_load.dart';
+import 'package:tucamion/views/add_load.dart';
 import 'package:tucamion/constants/api.dart';
 import 'package:tucamion/models/access_point.dart';
 
@@ -9,7 +9,6 @@ class AddAccessPoint extends StatelessWidget {
   final int pointType;
 
   const AddAccessPoint({required this.pointType, super.key});
-  
 
   @override
   Widget build(BuildContext context) {
