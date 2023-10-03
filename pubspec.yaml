@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.1.0
-  http: any  
+  http: any
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +24,5 @@ flutter:
     - assets/images/delivery-truck-1.png
     - assets/images/cloudy-1.png
     - assets/images/cloudy-2.png
+    - assets/images/driver-1.png
+    - assets/images/package-1.png
