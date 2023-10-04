@@ -130,7 +130,7 @@ class _LogInState extends State<LogIn> {
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
-                                .copyWith(color: error)),
+                                .copyWith(color: error, fontSize: 16)),
                       ),
                   ],
                 ),

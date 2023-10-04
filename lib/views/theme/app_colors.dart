@@ -6,6 +6,15 @@ const Color black = Color(0xFF232323);
 const Color error = Color(0xFFB73731);
 const Color info = Color(0xFFEDBD11);
 
+// Dark Theme Colors
+const Color darkPrimary = Color(0xFF1D4C8A);
+const Color darkSecondary = Color(0xFF1D75A0);
+const Color darkBackground = Color(0xFF121212);
+const Color darkSurface = Color(0xFF1F1F1F);
+const Color darkOnPrimary = Color(0xFFFFFFFF);
+const Color darkOnBackground = Color(0xFFE0E0E0);
+const Color darkOnError = Color(0xFFCF6679);
+
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: primaryColor,
 );
@@ -34,3 +43,17 @@ const MaterialColor primaryAccent =
   700: Color(0xFFADC1FF),
 });
 const int _primaryAccentValue = 0xFFF9FBFF;
+
+const kDarkColorScheme = ColorScheme(
+  primary: darkPrimary,
+  secondary: secondary,
+  surface: darkSurface,
+  background: darkBackground,
+  error: darkOnError,
+  onPrimary: darkOnPrimary,
+  onSecondary: darkOnBackground,
+  onSurface: darkOnBackground,
+  onBackground: darkOnBackground,
+  onError: darkOnError,
+  brightness: Brightness.dark,
+);

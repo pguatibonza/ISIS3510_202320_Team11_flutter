@@ -6,6 +6,7 @@ class TuCamionTheme {
   static ThemeData lightTheme() {
     return ThemeData().copyWith(
       useMaterial3: true,
+      brightness: Brightness.light,
       colorScheme: kColorScheme,
       appBarTheme: const AppBarTheme().copyWith(
         backgroundColor: kColorScheme.onPrimaryContainer,
@@ -28,6 +29,24 @@ class TuCamionTheme {
             displayMedium: AppTextStyles.caption(),
             displaySmall: AppTextStyles.caption(),
           ),
+    );
+  }
+
+  static ThemeData darkTheme() {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: darkPrimary,
+      backgroundColor: darkBackground,
+      scaffoldBackgroundColor: darkBackground,
+      errorColor: darkOnError,
+      colorScheme: kDarkColorScheme,
+      appBarTheme: AppBarTheme().copyWith(
+        backgroundColor: darkBackground,
+        foregroundColor: darkOnBackground,
+      ),
+      textTheme: ThemeData.dark()
+          .textTheme, // Use Flutter's dark default text themes and customize if needed.
+      // Add other theme customization if needed.
     );
   }
 }
