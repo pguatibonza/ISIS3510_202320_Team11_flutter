@@ -1,14 +1,18 @@
 name: tucamion
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.1.0 <4.0.0'
+  sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
+  amazon_cognito_identity_dart_2: ^3.5.0
   flutter:
     sdk: flutter
+  google_fonts: ^6.1.0
+  http: any
+  location: ^5.0.3
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +21,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/delivery-truck-1.png
+    - assets/images/cloudy-1.png
+    - assets/images/cloudy-2.png
+    - assets/images/driver-1.png
+    - assets/images/package-1.png
