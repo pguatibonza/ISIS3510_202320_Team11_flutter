@@ -215,8 +215,8 @@ class _SignUpState extends State<SignUp> {
                             ),
                             child: TextField(
                               controller: _passwordConfirmController,
-                              obscureText: true,
                               maxLines: 1,
+                              obscureText: true,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -367,7 +367,7 @@ class _SignUpState extends State<SignUp> {
 
     String result = await _userController.register(
       name: name,
-      lastName: "",
+      lastName: ".",
       email: email,
       password: password,
       passwordConfirmation: confirmPassword,
