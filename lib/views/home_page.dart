@@ -144,7 +144,6 @@ class ListTrips extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         height: 1.2000000477,
-                        color: const Color(0xff232323),
                       ),
                     );
                   }
@@ -174,7 +173,8 @@ class ListTrips extends StatelessWidget {
         name +
         "\n\n" +
         "Look for trucks at your city " +
-        cityName;
+        cityName +
+        "\n";
   }
 
   Future<LocationData> getLocation() async {
