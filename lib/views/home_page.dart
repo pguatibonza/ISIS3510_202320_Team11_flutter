@@ -1,14 +1,20 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
+import 'package:tucamion/controller/citycontroller.dart';
 import 'package:tucamion/views/add_accesspoint.dart';
 import 'package:tucamion/controller/api.dart';
 import 'package:tucamion/models/access_point.dart';
 import 'package:tucamion/models/load.dart';
 import 'package:tucamion/models/trip.dart';
+import 'package:tucamion/controller/locationcontroller.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.name});
+
+  final String name;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -87,7 +93,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ListTrips(
-        myTrips: myTrips, myAcessPoints: myAcessPoints, myLoads: myLoads);
+        myTrips: myTrips,
+        myAcessPoints: myAcessPoints,
+        myLoads: myLoads,
+        name: widget.name);
   }
 }
 
@@ -97,21 +106,83 @@ class ListTrips extends StatelessWidget {
     required this.myTrips,
     required this.myAcessPoints,
     required this.myLoads,
+    required this.name,
   });
 
   final List<Trip> myTrips;
   final List<AccessPoint> myAcessPoints;
   final List<Load> myLoads;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: LoadButton(),
+        floatingActionButton: const LoadButton(),
         bottomNavigationBar: NavigationBar(),
         appBar: AppBar(),
-        body: ListBuilder(
-            myTrips: myTrips, myAcessPoints: myAcessPoints, myLoads: myLoads));
+        body: Container(
+          padding: EdgeInsets.fromLTRB(5, 50, 5, 0),
+          child: Column(
+            children: [
+              FutureBuilder<String>(
+                future: salute(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // If the Future is still running, show a loading indicator.
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // If we run into an error, display it to the user.
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // If the Future is complete and no errors occurred, display the created posts.
+                    return Text(
+                      snapshot.data!,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2000000477,
+                        color: const Color(0xff232323),
+                      ),
+                    );
+                  }
+                },
+              ),
+              Expanded(
+                child: ListBuilder(
+                    myTrips: myTrips,
+                    myAcessPoints: myAcessPoints,
+                    myLoads: myLoads),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  Future<String> salute() async {
+    var locationService = LocationService();
+    LocationData locationData = await getLocation();
+
+    double latitude = locationData.latitude ?? 0.0;
+    double longitude = locationData.longitude ?? 0.0;
+
+    String cityName =
+        await locationService.getCityFromCoordinates(latitude, longitude);
+    return "Welcome back!\n" +
+        name +
+        "\n\n" +
+        "Look for trucks at your city " +
+        cityName;
+  }
+
+  Future<LocationData> getLocation() async {
+    var locationController = LocationController();
+    await locationController.getUserLocation();
+    LocationData? location = locationController.currentLocation;
+
+    return location!;
   }
 }
 

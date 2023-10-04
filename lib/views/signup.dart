@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/views/login.dart';
+import 'package:tucamion/views/home_page.dart';
 import 'package:tucamion/controller/usercontroller.dart';
 import 'package:tucamion/views/theme/app_colors.dart';
 
@@ -376,8 +377,13 @@ class _SignUpState extends State<SignUp> {
     );
 
     if (result == "ok") {
-      // Navigate to another screen or show a success message
-      print("correctly signed up");
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => HomePage(
+                    name: email,
+                  )));
     } else {
       // Set the error message and rebuild the widget
       setState(() {
