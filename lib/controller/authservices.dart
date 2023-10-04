@@ -19,6 +19,16 @@ class AuthService {
     required String phone,
     required String userType,
   }) async {
+    print(jsonEncode({
+      "name": name,
+      "lastName": lastName,
+      "email": email,
+      "password1": password,
+      "password2": passwordConfirmation,
+      "phone": phone,
+      "userType": userType,
+    }));
+
     final response = await http.post(
       Uri.parse("${baseUrl}auth/registration/"),
       headers: {
@@ -35,7 +45,11 @@ class AuthService {
       }),
     );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    print(response.statusCode);
+
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 ||
+        response.statusCode == 204) {
       return 'ok';
     } else {
       return jsonDecode(response.body)['detail'] ?? 'Unknown error occurred.';
@@ -60,7 +74,7 @@ class AuthService {
     if (response.statusCode == 200) {
       return 'ok';
     } else {
-      return jsonDecode(response.body)['detail'] ?? 'Unknown error occurred.';
+      return jsonDecode(response.body)['detail'] ?? 'Incorrect credentials.';
     }
   }
 }
