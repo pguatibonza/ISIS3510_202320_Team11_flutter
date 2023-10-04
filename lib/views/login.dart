@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/views/roles.dart';
+import 'package:tucamion/views/home_page.dart';
 import 'package:tucamion/views/theme/app_colors.dart';
 import 'package:tucamion/controller/usercontroller.dart';
 
@@ -282,8 +283,13 @@ class _LogInState extends State<LogIn> {
     String result = await _userController.authenticate(email, password);
 
     if (result == "ok") {
-      // Navigate to another screen or perform another action
-      print("autenticado");
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => HomePage(
+                    name: email,
+                  )));
     } else {
       // Set the error message and rebuild the widget
       setState(() {
