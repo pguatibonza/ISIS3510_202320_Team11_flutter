@@ -10,15 +10,13 @@ class UserController {
 
   final AuthService _authService = AuthService();
 
-  Future<bool> authenticate(String email, String password) async {
-    final response = await _authService.login(email: email, password: password);
-    if (response != null && response.containsKey('key')) {
-      return true;
-    }
-    return false;
+  Future<String> authenticate(String email, String password) async {
+    final responseMessage =
+        await _authService.login(email: email, password: password);
+    return responseMessage;
   }
 
-  Future<bool> register({
+  Future<String> register({
     required String name,
     required String lastName,
     required String email,
@@ -27,7 +25,7 @@ class UserController {
     required String phone,
     required String userType,
   }) async {
-    final response = await _authService.register(
+    final responseMessage = await _authService.register(
       name: name,
       lastName: lastName,
       email: email,
@@ -37,9 +35,6 @@ class UserController {
       userType: userType,
     );
 
-    if (response != null && response.containsKey('key')) {
-      return true;
-    }
-    return false;
+    return responseMessage;
   }
 }

@@ -10,7 +10,7 @@ class AuthService {
 
   final String baseUrl = api;
 
-  Future<Map<String, dynamic>?> register({
+  Future<String> register({
     required String name,
     required String lastName,
     required String email,
@@ -36,14 +36,13 @@ class AuthService {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return jsonDecode(response.body);
+      return 'ok';
     } else {
-      print("Error during registration: ${response.body}");
-      return null;
+      return jsonDecode(response.body)['detail'] ?? 'Unknown error occurred.';
     }
   }
 
-  Future<Map<String, dynamic>?> login({
+  Future<String> login({
     required String email,
     required String password,
   }) async {
@@ -59,10 +58,9 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return 'ok';
     } else {
-      print("Error during login: ${response.body}");
-      return null;
+      return jsonDecode(response.body)['detail'] ?? 'Unknown error occurred.';
     }
   }
 }

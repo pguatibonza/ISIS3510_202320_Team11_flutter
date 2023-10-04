@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/views/signup.dart';
 
 class Roles extends StatelessWidget {
   const Roles({super.key});
@@ -45,7 +46,15 @@ class Roles extends StatelessWidget {
                   children: [
                     TextButton(
                       // frame48WqM (17:613)
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUp(
+                                    role: 'LO',
+                                  )),
+                        );
+                      },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                       ),

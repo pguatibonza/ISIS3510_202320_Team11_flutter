@@ -5,7 +5,8 @@ import 'package:tucamion/controller/usercontroller.dart';
 import 'package:tucamion/views/theme/app_colors.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key, required String role});
+  const SignUp({super.key, required this.role});
+  final String role;
 
   @override
   State<SignUp> createState() {
@@ -14,6 +15,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final UserController _userController = UserController();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmController =
@@ -145,6 +148,7 @@ class _SignUpState extends State<SignUp> {
                             child: TextField(
                               controller: _phoneController,
                               maxLines: null,
+                              keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -211,7 +215,6 @@ class _SignUpState extends State<SignUp> {
                             ),
                             child: TextField(
                               controller: _passwordConfirmController,
-                              keyboardType: TextInputType.phone,
                               obscureText: true,
                               maxLines: 1,
                               decoration: InputDecoration(
@@ -252,22 +255,7 @@ class _SignUpState extends State<SignUp> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextButton(
-                            onPressed: () async {
-                              bool success = await UserController().register(
-                                  _emailController.text,
-                                  _nameController.text,
-                                  _phoneController.text,
-                                  _passwordController.text,
-                                  _passwordConfirmController.text);
-                              if (success) {
-                                print("Sign up successful");
-                              } else {
-                                setState(() {
-                                  _errorMessage =
-                                      "Both password must be the same";
-                                });
-                              }
-                            },
+                            onPressed: _signUp,
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                             ),
@@ -310,7 +298,7 @@ class _SignUpState extends State<SignUp> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LogIn()),
+                                    builder: (context) => const LogIn()),
                               );
                             },
                             style: TextButton.styleFrom(
@@ -368,5 +356,33 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  _signUp() async {
+    String name = _nameController.text;
+    String email = _emailController.text;
+    String phone = _phoneController.text;
+    String password = _passwordController.text;
+    String confirmPassword = _passwordConfirmController.text;
+
+    String result = await _userController.register(
+      name: name,
+      lastName: "",
+      email: email,
+      password: password,
+      passwordConfirmation: confirmPassword,
+      phone: phone,
+      userType: widget.role,
+    );
+
+    if (result == "ok") {
+      // Navigate to another screen or show a success message
+      print("correctly signed up");
+    } else {
+      // Set the error message and rebuild the widget
+      setState(() {
+        _errorMessage = result;
+      });
+    }
   }
 }

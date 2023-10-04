@@ -14,6 +14,7 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  final UserController _userController = UserController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String? _errorMessage;
@@ -146,20 +147,7 @@ class _LogInState extends State<LogIn> {
                       margin: EdgeInsets.fromLTRB(
                           0 * fem, 0 * fem, 0 * fem, 16 * fem),
                       child: TextButton(
-                        onPressed: () async {
-                          bool success = await UserController().authenticate(
-                            _emailController.text,
-                            _passwordController.text,
-                          );
-                          if (success) {
-                            // Navigate to another page or show a success message
-                            print("Login successful!");
-                          } else {
-                            setState(() {
-                              _errorMessage = "Invalid email or password";
-                            });
-                          }
-                        },
+                        onPressed: _login,
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                         ),
@@ -285,5 +273,22 @@ class _LogInState extends State<LogIn> {
         ),
       ),
     );
+  }
+
+  _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    String result = await _userController.authenticate(email, password);
+
+    if (result == "ok") {
+      // Navigate to another screen or perform another action
+      print("autenticado");
+    } else {
+      // Set the error message and rebuild the widget
+      setState(() {
+        _errorMessage = result;
+      });
+    }
   }
 }
