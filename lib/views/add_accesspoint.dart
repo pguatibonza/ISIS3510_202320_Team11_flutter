@@ -104,6 +104,7 @@ class _AccessPointFormState extends State<AccessPointForm> {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                     if (_formKey.currentState!.validate()) {
                     Future<int> accessPointId = post();
                     accessPointId.then((result){
                       int accessPointIdAwaited=result;
@@ -122,7 +123,7 @@ class _AccessPointFormState extends State<AccessPointForm> {
                                   dropoffId: accessPointIdAwaited,)));
                     }
                     });
-                    
+                     }
                   },
                   child: Text('Submit'),
                 ),
@@ -206,9 +207,11 @@ class _AccessPointFormState extends State<AccessPointForm> {
 
 //fill form fields with retrieved data
   void fillFormFieldsWithLocationData() async {
+    print("p");
     try {
       final userLocation = await getUserLocation();
       final locationData = await reverseGeocode(userLocation);
+      print("pp");
 
       setState(() {
         _countryController.text = locationData['country'] ?? '';

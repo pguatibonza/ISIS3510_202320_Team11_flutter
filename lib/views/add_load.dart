@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tucamion/controller/api.dart';
+import 'package:tucamion/controller/usercontroller.dart';
+import 'package:tucamion/models/load.dart';
+import 'package:tucamion/views/home_page.dart';
 
 class AddLoad extends StatelessWidget {
   final int pickupId;
@@ -37,20 +40,13 @@ class _LoadFormState extends State<LoadForm> {
   TextEditingController _weightController = TextEditingController();
   TextEditingController _volumeController = TextEditingController();
 
-  String _trailerType = 'Any'; // Dropdown value
+  Choice _trailerType=choices[0]; // Dropdown value
 
-  List<String> _trailerTypes = [
-    'Any',
-    'Flatbed',
-    'Dryvan',
-    'Reefer',
-    'Stepdeck',
-    'Other'
-  ]; // Replace with your list of trailer types.
+// Replace with your list of trailer types.
 
   @override
   Widget build(BuildContext context) {
-    print(_trailerTypes);
+  
     return Form(
       key: _formKey,
       child: Column(
@@ -65,12 +61,12 @@ class _LoadFormState extends State<LoadForm> {
               return null;
             },
           ),
-          DropdownButtonFormField<String>(
+          DropdownButtonFormField<Choice>(
             value: _trailerType,
-            items: _trailerTypes.map((item) {
-              return DropdownMenuItem<String>(
+            items: choices.map((item) {
+              return DropdownMenuItem<Choice>(
                 value: item,
-                child: Text(item),
+                child: Text(item.label),
               );
             }).toList(),
             onChanged: (value) {
@@ -80,7 +76,7 @@ class _LoadFormState extends State<LoadForm> {
             },
             decoration: InputDecoration(labelText: 'Trailer Type'),
             validator: (value) {
-              if (value == null || value.isEmpty) {
+              if (value == null || value.value.isEmpty) {
                 return 'Please select a trailer type';
               }
               return null;
@@ -97,6 +93,9 @@ class _LoadFormState extends State<LoadForm> {
               if (int.tryParse(value) == null) {
                 return 'Weight must be a number';
               }
+              if(int.parse(value) <= 0 ){
+                return 'Weight must be positive';
+              }
               return null;
             },
           ),
@@ -104,18 +103,28 @@ class _LoadFormState extends State<LoadForm> {
             controller: _volumeController,
             decoration: InputDecoration(labelText: 'Volume (optional)'),
             keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value != null && value.isNotEmpty) {
+                if (int.tryParse(value) == null) {
+                  return 'Volume must be a number';
+                }
+                if(int.parse(value) <= 0 ){
+                  return 'Volume must be positive';
+                }
+              }
+              return null;
+            },
           ),
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              // Here, you can submit the data to an API or perform other actions.
+               if (_formKey.currentState!.validate()) {
               Future<int> loadId = postLoad();
               loadId.then((value){
                 int awaitedLoadId=value;
                 postTrip(awaitedLoadId, widget.pickupId, widget.dropoffId);
-
-
               });
+               }            
             },
             child: Text('Create Trip'),
           ),
@@ -126,14 +135,11 @@ class _LoadFormState extends State<LoadForm> {
 
   Future<int> postLoad() async {
     var id = 0;
-    print("Posting data");
+    print("Posting data...");
     if (_formKey.currentState!.validate()) {
       final type = _typeController.text;
       final weight = int.tryParse(_weightController.text) ?? 0;
-      final volume = _volumeController.text.isNotEmpty
-          ? int.tryParse(_volumeController.text)
-          : null;
-
+      final volume = int.tryParse(_volumeController.text) ?? null;
       final trailerType = _trailerType;
       try {
         http.Response response = await http.post(Uri.parse(loads),
@@ -142,7 +148,7 @@ class _LoadFormState extends State<LoadForm> {
             },
             body: jsonEncode(<String, dynamic>{
               "type": type,
-              "trailerType": trailerType,
+              "trailerType": trailerType.value,
               "weight": weight,
               "volume": volume
             }));
@@ -162,7 +168,35 @@ class _LoadFormState extends State<LoadForm> {
     }
     return id;
   }
-  Future<int> postTrip(int loadId,int pickupId,int dropoffId) async{
-    return 0;
+  void postTrip(int loadId,int pickupId,int dropoffId) async{
+    int? userId = UserController.savedUser.id;
+    String status ='TA';
+    try {
+      http.Response response= await http.post(Uri.parse(trips),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "load": loadId.toString(),
+        "loadOwner": userId.toString(),
+        "pickup": pickupId.toString(),
+        "dropoff": dropoffId.toString(),
+        "status": status
+      }));
+      if (response.statusCode == 201) {
+        print("Trip created");
+       // ignore: use_build_context_synchronously
+       Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  HomePage(name: UserController.savedUser.name!)));
+      } else {
+        print("Trip not created");
+      }
+    }
+    catch(e){
+      print("Error $e");
+    }
   }
 }

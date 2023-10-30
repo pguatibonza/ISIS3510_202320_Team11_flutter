@@ -10,6 +10,7 @@ import 'package:tucamion/models/access_point.dart';
 import 'package:tucamion/models/load.dart';
 import 'package:tucamion/models/trip.dart';
 import 'package:tucamion/controller/locationcontroller.dart';
+import 'package:tucamion/views/trip_details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.name});
@@ -227,44 +228,60 @@ class ListBuilder extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Card(
+              
               elevation: 5,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0)),
-              child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(load.type),
-                          Text('${load.weight} kgs '),
-                          SizedBox(height: 10),
-                          Text('Pickup'),
-                          Text(pickup.after.toString()),
-                          Row(
-                            children: [
-                              Text(pickup.address),
-                              Text(pickup.city),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Text('Dropoff'),
-                          Text(dropoff.before.toString()),
-                          Row(
-                            children: [
-                              Text(dropoff.address),
-                              Text(dropoff.city),
-                            ],
-                          ),
-                        ],
+              child: GestureDetector(
+                onTapUp: (details){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TripDetails(
+                        trip: myTrips[index],
+                        pickup: pickup,
+                        dropoff: dropoff,
+                        load: load,
                       ),
-                      Text(myTrips[index].status)
-                    ],
-                  )),
+                    ),
+                  );
+                },
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(load.type),
+                            Text('${load.weight} kgs '),
+                            SizedBox(height: 10),
+                            Text('Pickup'),
+                            Text(pickup.after.toString()),
+                            Row(
+                              children: [
+                                Text(pickup.address),
+                                Text(pickup.city),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Text('Dropoff'),
+                            Text(dropoff.before.toString()),
+                            Row(
+                              children: [
+                                Text(dropoff.address),
+                                Text(dropoff.city),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Text(myTrips[index].status)
+                      ],
+                    )),
+              ),
             ));
       },
     );
@@ -303,7 +320,7 @@ class LoadButton extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    AddAccessPoint(pointType: 1,pointId: 0,)));
+                    AddAccessPoint(pointType: 1,pointId: 0)));
       },
     );
   }
