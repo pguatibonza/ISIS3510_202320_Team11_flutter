@@ -13,5 +13,18 @@ class Load{
     required this.weight,
     this.volume
   });
-
 }
+class Choice {
+  final String value;
+  final String label;
+
+  Choice({required this.value, required this.label});
+}
+List<Choice> choices = [
+    Choice(value: 'AN', label: 'Any'),
+    Choice(value: 'DV', label: 'Dry van'),
+    Choice(value: 'RF', label: 'Reefer'),
+    Choice(value: 'LB', label: 'lowboy'),
+    Choice(value: 'SD', label: 'Stepdeck'),
+    Choice(value: 'OT', label: 'Other'),
+];

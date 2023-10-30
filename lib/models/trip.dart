@@ -16,6 +16,4 @@ class Trip{
     required this.dropoff,
     required this.status
   });
-
-
 }

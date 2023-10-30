@@ -861,3 +861,16 @@ Temporary Items
 # Archives         - https://github.com/github/gitignore/blob/main/Global/Archives.gitignore
 # Backup           - https://github.com/github/gitignore/blob/main/Global/Backup.gitignore
 # JEnv             - https://github.com/github/gitignore/blob/main/Global/JEnv.gitignore
+android/build.gradle
+
+linux/flutter/generated_plugin_registrant.cc
+
+windows/flutter/generated_plugins.cmake
+
+windows/flutter/generated_plugin_registrant.h
+
+linux/flutter/generated_plugins.cmake
+
+windows/flutter/generated_plugin_registrant.cc
+
+linux/flutter/generated_plugin_registrant.h

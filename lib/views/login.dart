@@ -284,6 +284,8 @@ class _LogInState extends State<LogIn> {
 
     if (result == "ok") {
       // ignore: use_build_context_synchronously
+      _userController.SaveUser(email);
+      print(UserController.savedUser);
       Navigator.push(
           context,
           MaterialPageRoute(

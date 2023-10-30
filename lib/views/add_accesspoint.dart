@@ -4,11 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:tucamion/views/add_load.dart';
 import 'package:tucamion/controller/api.dart';
 import 'package:tucamion/models/access_point.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class AddAccessPoint extends StatelessWidget {
   final int pointType;
+  final int pointId;
 
-  const AddAccessPoint({required this.pointType, super.key});
+  const AddAccessPoint({required this.pointType, required this.pointId, super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +25,17 @@ class AddAccessPoint extends StatelessWidget {
       appBar: AppBar(
         title: Text(_text),
       ),
-      body: AccessPointForm(pointType: pointType),
+      body: AccessPointForm(pointType: pointType, pointId: pointId,),
     );
   }
 }
 
 class AccessPointForm extends StatefulWidget {
   final int pointType;
-  const AccessPointForm({required this.pointType, super.key});
+  final int pointId;
+  const AccessPointForm({required this.pointType, required this.pointId, super.key});
+  
+  
 
   @override
   State<AccessPointForm> createState() => _AccessPointFormState();
@@ -94,23 +100,40 @@ class _AccessPointFormState extends State<AccessPointForm> {
               child: Text('Before'),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Future<int> accessPointId = post();
-                if (widget.pointType == 1) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              AddAccessPoint(pointType: 2)));
-                } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => AddLoad()));
-                }
-              },
-              child: Text('Submit'),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                     if (_formKey.currentState!.validate()) {
+                    Future<int> accessPointId = post();
+                    accessPointId.then((result){
+                      int accessPointIdAwaited=result;
+                      if (widget.pointType == 1) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  AddAccessPoint(pointType: 2, pointId: accessPointIdAwaited ,)));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => AddLoad(
+                                  pickupId: widget.pointId,
+                                  dropoffId: accessPointIdAwaited,)));
+                    }
+                    });
+                     }
+                  },
+                  child: Text('Submit'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    fillFormFieldsWithLocationData();
+                  },
+                  child: Text('Fill with Location Data'),
+                ),
+              ],
             ),
           ],
         ),
@@ -138,6 +161,7 @@ class _AccessPointFormState extends State<AccessPointForm> {
         if (response.statusCode == 201) {
           setState(() {
             id = json.decode(response.body)["id"];
+            print("AccessPoint created");
           });
         } else {
           print("AccessPoint not created");
@@ -148,6 +172,55 @@ class _AccessPointFormState extends State<AccessPointForm> {
     }
 
     return id;
+  }
+
+//Retrieve current location
+  Future<Position> getUserLocation() async {
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  }
+
+//reverse geocode the user's location to obtain country, city, and address:
+  Future<Map<String, String>> reverseGeocode(Position position) async {
+    final placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    if (placemarks.isNotEmpty) {
+      final placemark = placemarks.first;
+      final country = placemark.country;
+      final city = placemark.locality;
+      final address = placemark.street;
+
+      return {
+        'country': country ?? 'Unknown',
+        'city': city ?? 'Unknown',
+        'address': address ?? 'Unknown',
+      };
+    }
+
+    return {
+      'country': 'Unknown',
+      'city': 'Unknown',
+      'address': 'Unknown',
+    };
+  }
+
+//fill form fields with retrieved data
+  void fillFormFieldsWithLocationData() async {
+    print("p");
+    try {
+      final userLocation = await getUserLocation();
+      final locationData = await reverseGeocode(userLocation);
+      print("pp");
+
+      setState(() {
+        _countryController.text = locationData['country'] ?? '';
+        _cityController.text = locationData['city'] ?? '';
+        _addressController.text = locationData['address'] ?? '';
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Future<void> _selectDateAndTime(int index) async {
