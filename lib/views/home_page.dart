@@ -22,62 +22,76 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Trip> myTrips = [];
-  List<AccessPoint> myAcessPoints = [];
+  List<AccessPoint> myAccessPoints = [];
   List<Load> myLoads = [];
 
-  void fetchData() async {
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
     try {
-      http.Response response = await http.get(Uri.parse(trips));
-      var data = json.decode(response.body);
-      print(data);
-      data.forEach((trip) async {
-        Trip t = Trip(
-            id: trip["id"],
-            loadOwner: trip["loadOwner"],
-            trailer: trip["trailer"],
-            load: trip["load"],
-            pickup: trip["pickup"],
-            dropoff: trip["dropoff"],
-            status: trip["status"]);
+      final response = await http.get(Uri.parse(trips));
+      final data = json.decode(response.body);
+      
+      for (var trip in data) {
+        final t = Trip(
+          id: trip["id"],
+          loadOwner: trip["loadOwner"],
+          trailer: trip["trailer"],
+          load: trip["load"],
+          pickup: trip["pickup"],
+          dropoff: trip["dropoff"],
+          status: trip["status"],
+        );
         myTrips.add(t);
+        
+        final pickupResponse = await http.get(Uri.parse('$accessPoints/${t.pickup}'));
+        final dataAccess = json.decode(pickupResponse.body);
+        
+        final a = AccessPoint(
+          id: dataAccess["id"],
+          country: dataAccess["country"],
+          city: dataAccess["city"],
+          address: dataAccess["address"],
+          before: DateTime.parse(dataAccess["before"]),
+          after: DateTime.parse(dataAccess["after"]),
+        );
+        myAccessPoints.add(a);
+        
+        final dropoffResponse = await http.get(Uri.parse('$accessPoints/${t.dropoff}'));
+        final dataDropoff = json.decode(dropoffResponse.body);
+        
+        final aDropoff = AccessPoint(
+          id: dataDropoff["id"],
+          country: dataDropoff["country"],
+          city: dataDropoff["city"],
+          address: dataDropoff["address"],
+          before: DateTime.parse(dataDropoff["before"]),
+          after: DateTime.parse(dataDropoff["after"]),
+        );
+        myAccessPoints.add(aDropoff);
+        
+        final loadResponse = await http.get(Uri.parse('$loads/${t.load}'));
+        final dataLoad = json.decode(loadResponse.body);
+        
+        final l = Load(
+          id: dataLoad["id"],
+          type: dataLoad["type"],
+          trailerType: dataLoad["trailerType"],
+          weight: dataLoad["weight"],
+          volume: dataLoad["volume"],
+        );
+        myLoads.add(l);
+      }
 
-        try {
-          http.Response response =
-              await http.get(Uri.parse('$accessPoints/${t.pickup}'));
-
-          var dataAccess = json.decode(response.body);
-          print(dataAccess);
-          AccessPoint a = AccessPoint(
-              id: dataAccess["id"],
-              country: dataAccess["country"],
-              city: dataAccess["city"],
-              address: dataAccess["address"],
-              before: DateTime.parse(dataAccess["before"]),
-              after: DateTime.parse(dataAccess["after"]));
-          myAcessPoints.add(a);
-          response = await http.get(Uri.parse('$accessPoints/${t.dropoff}'));
-          dataAccess = json.decode(response.body);
-          print(response.body);
-          a = AccessPoint(
-              id: dataAccess["id"],
-              country: dataAccess["country"],
-              city: dataAccess["city"],
-              address: dataAccess["address"],
-              before: DateTime.parse(dataAccess["before"]),
-              after: DateTime.parse(dataAccess["after"]));
-          myAcessPoints.add(a);
-          response = await http.get(Uri.parse('$loads/${t.load}'));
-          var dataLoad = json.decode(response.body);
-          Load l = Load(
-              id: dataLoad["id"],
-              type: dataLoad["type"],
-              trailerType: dataLoad["trailerType"],
-              weight: dataLoad["weight"],
-              volume: dataLoad["volume"]);
-          myLoads.add(l);
-        } catch (e) {
-          print(e);
-        }
+      setState(() {
+        // Update the state with the fetched data
+        myTrips = myTrips;
+        myAccessPoints = myAccessPoints;
+        myLoads = myLoads;
       });
     } catch (e) {
       print(e);
@@ -85,32 +99,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void initState() {
-    fetchData();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListTrips(
-        myTrips: myTrips,
-        myAcessPoints: myAcessPoints,
-        myLoads: myLoads,
-        name: widget.name);
+      myTrips: myTrips,
+      myAccessPoints: myAccessPoints,
+      myLoads: myLoads,
+      name: widget.name,
+    );
   }
 }
+
 
 class ListTrips extends StatelessWidget {
   const ListTrips({
     super.key,
     required this.myTrips,
-    required this.myAcessPoints,
+    required this.myAccessPoints,
     required this.myLoads,
     required this.name,
   });
 
   final List<Trip> myTrips;
-  final List<AccessPoint> myAcessPoints;
+  final List<AccessPoint> myAccessPoints;
   final List<Load> myLoads;
   final String name;
 
@@ -152,7 +162,7 @@ class ListTrips extends StatelessWidget {
               Expanded(
                 child: ListBuilder(
                     myTrips: myTrips,
-                    myAcessPoints: myAcessPoints,
+                    myAccessPoints: myAccessPoints,
                     myLoads: myLoads),
               ),
             ],
@@ -190,12 +200,12 @@ class ListBuilder extends StatelessWidget {
   const ListBuilder({
     super.key,
     required this.myTrips,
-    required this.myAcessPoints,
+    required this.myAccessPoints,
     required this.myLoads,
   });
 
   final List<Trip> myTrips;
-  final List<AccessPoint> myAcessPoints;
+  final List<AccessPoint> myAccessPoints;
   final List<Load> myLoads;
 
   @override
@@ -203,10 +213,10 @@ class ListBuilder extends StatelessWidget {
     return ListView.builder(
       itemCount: myTrips.length,
       itemBuilder: (context, index) {
-        var pickup = myAcessPoints
+        var pickup = myAccessPoints
             .where((element) => element.id == myTrips[index].pickup)
             .first;
-        var dropoff = myAcessPoints
+        var dropoff = myAccessPoints
             .where((element) => element.id == myTrips[index].dropoff)
             .first;
         var load =
@@ -293,7 +303,7 @@ class LoadButton extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    AddAccessPoint(pointType: 1)));
+                    AddAccessPoint(pointType: 1,pointId: 0,)));
       },
     );
   }
