@@ -12,10 +12,12 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.1.0
   http: any
+  google_maps_flutter : ^2.0.3
   location: ^5.0.3
   geolocator: ^10.1.0
   geocoding: ^2.1.1
   flutter_form_builder: ^9.1.1
+  permission_handler: ^10.1.0
 
 dev_dependencies:
   flutter_test:
