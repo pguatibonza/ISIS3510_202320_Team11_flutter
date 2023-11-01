@@ -22,6 +22,7 @@ class _TripDetailsState extends State<TripDetails> {
   GoogleMapController? _controller;
   LatLng _pickupLocation = LatLng(0.0, 0.0); // Default position
   LatLng _dropoffLocation =LatLng(0.0,0.0);
+  LatLng _bogota=LatLng(4.624335, -74.063644);
 
   @override
   void initState() {
@@ -45,27 +46,62 @@ class _TripDetailsState extends State<TripDetails> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: GoogleMap(
-        mapType: MapType.normal, // Set the map type
-        initialCameraPosition: CameraPosition(target: _pickupLocation, zoom: 15),
-        markers: {
-          Marker(
-            markerId: MarkerId('Pickup'),
-            position: _pickupLocation,
-            infoWindow: InfoWindow(title: 'Address Marker'),
-          ),
-          Marker(
-            markerId: MarkerId('Dropoff'),
-            position: _dropoffLocation,
-            infoWindow: InfoWindow(title: 'Address Marker'),
-          ),
-        },
-      ),
 
-      
-    );
+    return Scaffold(
+  appBar: AppBar(title:Text("Trip Info"),),
+  body: Stack(
+    children: [
+      Center(
+        child: Container(
+          margin: EdgeInsets.all(8),
+          child: GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(target: _bogota, zoom: 5),
+            markers: {
+              Marker(
+                markerId: MarkerId('Pickup'),
+                position: _pickupLocation,
+                infoWindow: InfoWindow(title: 'Pickup Address'),
+              ),
+              Marker(
+                markerId: MarkerId('Dropoff'),
+                position: _dropoffLocation,
+                infoWindow: InfoWindow(title: 'Dropoff Address'),
+              ),
+            },
+          ),
+        ),
+      ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: EdgeInsets.all(16),
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Load Type: ${widget.load.type}'),
+                Text('Trailer Type: ${widget.load.trailerType}'),
+                Text('Weight: ${widget.load.weight} lbs'),
+                if (widget.load.volume != null)
+                  Text('Volume: ${widget.load.volume} cubic ft'),
+                Text('Pickup Address: ${widget.pickup.address}, ${widget.pickup.city}, ${widget.pickup.country}'),
+                Text('Dropoff Address: ${widget.dropoff.address}, ${widget.dropoff.city}, ${widget.dropoff.country}'),
+                if (widget.trip.trailer==null)
+                    Text('We have not found a Truck available yet')
+                else
+                    Text('We have found a truck a truck available'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+);
+
   }
 }
 
@@ -77,13 +113,12 @@ Future<LatLng> getCoordinatesFromAddress(String address) async {
   List<Location> locations = await locationFromAddress(address);
   if (locations.isNotEmpty) {
     final location = locations[0];
-    print("prrrrrrrrrrrrrrrrrr");
     print(location.latitude);
     return LatLng(location.latitude, location.longitude);
   }
   }
   catch(e){
-    print("errrorr $e");
+    print("Error :  $e");
   }
   
   return LatLng(0.0, 0.0); // Default position if address not found
