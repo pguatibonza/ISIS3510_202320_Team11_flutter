@@ -13,6 +13,16 @@ class Load{
     required this.weight,
     this.volume
   });
+  
+  factory Load.fromJson(Map<String, dynamic> json) {
+    return Load(
+      id: json["id"],
+      type: json["type"],
+      trailerType: json["trailerType"],
+      weight: json["weight"],
+      volume: json["volume"],
+    );
+  }
 }
 class Choice {
   final String value;

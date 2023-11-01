@@ -11,6 +11,8 @@ import 'package:tucamion/models/load.dart';
 import 'package:tucamion/models/trip.dart';
 import 'package:tucamion/controller/locationcontroller.dart';
 import 'package:tucamion/views/trip_details.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.name});
@@ -32,72 +34,66 @@ class _HomePageState extends State<HomePage> {
     fetchData();
   }
 
-  Future<void> fetchData() async {
-    try {
+  
+ Future<void> fetchData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  
+  try {
+    final cachedData = prefs.getString('cachedDataKey');
+
+    if (cachedData != null) {
+      // Data is found in the cache, use it
+      final data = json.decode(cachedData);
+      updateListsFromData(data);
+      print("Data found in the cache");
+    } else {
+      print("No data found in the cache");
       final response = await http.get(Uri.parse(trips));
       final data = json.decode(response.body);
       
-      for (var trip in data) {
-        final t = Trip(
-          id: trip["id"],
-          loadOwner: trip["loadOwner"],
-          trailer: trip["trailer"],
-          load: trip["load"],
-          pickup: trip["pickup"],
-          dropoff: trip["dropoff"],
-          status: trip["status"],
-        );
-        myTrips.add(t);
-        
-        final pickupResponse = await http.get(Uri.parse('$accessPoints/${t.pickup}'));
-        final dataAccess = json.decode(pickupResponse.body);
-        
-        final a = AccessPoint(
-          id: dataAccess["id"],
-          country: dataAccess["country"],
-          city: dataAccess["city"],
-          address: dataAccess["address"],
-          before: DateTime.parse(dataAccess["before"]),
-          after: DateTime.parse(dataAccess["after"]),
-        );
-        myAccessPoints.add(a);
-        
-        final dropoffResponse = await http.get(Uri.parse('$accessPoints/${t.dropoff}'));
-        final dataDropoff = json.decode(dropoffResponse.body);
-        
-        final aDropoff = AccessPoint(
-          id: dataDropoff["id"],
-          country: dataDropoff["country"],
-          city: dataDropoff["city"],
-          address: dataDropoff["address"],
-          before: DateTime.parse(dataDropoff["before"]),
-          after: DateTime.parse(dataDropoff["after"]),
-        );
-        myAccessPoints.add(aDropoff);
-        
-        final loadResponse = await http.get(Uri.parse('$loads/${t.load}'));
-        final dataLoad = json.decode(loadResponse.body);
-        
-        final l = Load(
-          id: dataLoad["id"],
-          type: dataLoad["type"],
-          trailerType: dataLoad["trailerType"],
-          weight: dataLoad["weight"],
-          volume: dataLoad["volume"],
-        );
-        myLoads.add(l);
-      }
+      // Update lists from the fetched data
+      await updateListsFromData(data);  // Make the call to the async function
 
-      setState(() {
-        // Update the state with the fetched data
-        myTrips = myTrips;
-        myAccessPoints = myAccessPoints;
-        myLoads = myLoads;
-      });
-    } catch (e) {
-      print(e);
+      // Save the fetched data to the cache
+      await prefs.setString('cachedDataKey', json.encode(data));
     }
+
+    setState(() {
+      // Update the state with the fetched data
+      myTrips = myTrips;
+      myAccessPoints = myAccessPoints;
+      myLoads = myLoads;
+    });
+  } catch (e) {
+    print("error$e");
   }
+}
+
+Future<void> updateListsFromData(List<dynamic> data) async {
+  for (var trip in data) {
+    final t = Trip.fromJson(trip);
+    myTrips.add(t);
+    
+    final pickupResponse = await http.get(Uri.parse('$accessPoints/${t.pickup}'));
+    final dataAccess = json.decode(pickupResponse.body);
+    
+    final a = AccessPoint.fromJson(dataAccess);
+    myAccessPoints.add(a);
+    
+    final dropoffResponse = await http.get(Uri.parse('$accessPoints/${t.dropoff}'));
+    final dataDropoff = json.decode(dropoffResponse.body);
+    
+    final aDropoff = AccessPoint.fromJson(dataDropoff);
+    myAccessPoints.add(aDropoff);
+    
+    final loadResponse = await http.get(Uri.parse('$loads/${t.load}'));
+    final dataLoad = json.decode(loadResponse.body);
+    
+    final l = Load.fromJson(dataLoad);
+    myLoads.add(l);
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
