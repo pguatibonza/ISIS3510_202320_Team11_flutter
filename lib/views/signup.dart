@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/login.dart';
 import 'package:tucamion/views/home_page.dart';
 import 'package:tucamion/controller/usercontroller.dart';
@@ -377,13 +378,32 @@ class _SignUpState extends State<SignUp> {
     );
 
     if (result == "ok") {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
+      // ignore: use_build_context_synchronousl
+
+      if (widget.role == "LO") {
+        print(widget.role);
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(
-                    name: email,
-                  )));
+            builder: (BuildContext context) => HomePage(
+              name: email,
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        print(widget.role);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HomePageTruck(
+              name: email,
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
     } else {
       // Set the error message and rebuild the widget
       setState(() {
