@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ import 'package:tucamion/models/trip.dart';
 import 'package:tucamion/controller/locationcontroller.dart';
 import 'package:tucamion/views/trip_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -27,6 +29,8 @@ class _HomePageState extends State<HomePage> {
   List<Trip> myTrips = [];
   List<AccessPoint> myAccessPoints = [];
   List<Load> myLoads = [];
+  final cacheManager = DefaultCacheManager();
+
 
   @override
   void initState() {
@@ -36,16 +40,19 @@ class _HomePageState extends State<HomePage> {
 
   
  Future<void> fetchData() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  
   
   try {
-    final cachedData = prefs.getString('cachedDataKey');
+    FileInfo? fileInfo = await cacheManager.getFileFromCache('Trips');
 
-    if (cachedData != null) {
-      // Data is found in the cache, use it
+    if (fileInfo != null && fileInfo.file.existsSync() ) {
+      // Data is found in the cache
+      final cachedData = await fileInfo.file.readAsString();
       final data = json.decode(cachedData);
-      updateListsFromData(data);
+      print(data);
+      await updateListsFromData(data);
       print("Data found in the cache");
+
     } else {
       print("No data found in the cache");
       final response = await http.get(Uri.parse(trips));
@@ -55,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       await updateListsFromData(data);  // Make the call to the async function
 
       // Save the fetched data to the cache
-      await prefs.setString('cachedDataKey', json.encode(data));
+      cacheManager.putFile('Trips', Uint8List.fromList(json.encode(data).codeUnits));
     }
 
     setState(() {
