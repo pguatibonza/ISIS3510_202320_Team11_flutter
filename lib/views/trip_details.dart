@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tucamion/models/access_point.dart';
 import 'package:tucamion/models/load.dart';
 import 'package:tucamion/models/trip.dart';
-import 'package:geocoding/geocoding.dart';
 
 class TripDetails extends StatefulWidget {
   const TripDetails({super.key,required this.trip,required this.pickup,required this.dropoff,required this.load});
@@ -19,7 +18,6 @@ class TripDetails extends StatefulWidget {
 }
 
 class _TripDetailsState extends State<TripDetails> {
-  GoogleMapController? _controller;
   LatLng _pickupLocation = LatLng(0.0, 0.0); // Default position
   LatLng _dropoffLocation =LatLng(0.0,0.0);
   LatLng _bogota=LatLng(4.624335, -74.063644);
@@ -46,6 +44,7 @@ class _TripDetailsState extends State<TripDetails> {
   
   @override
   Widget build(BuildContext context) {
+    print("${widget.load.id}pppp");
 
     return Scaffold(
   appBar: AppBar(title:Text("Trip Info"),),
