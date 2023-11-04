@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import './authservices.dart';
 import './api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class UserController {
   // Singleton pattern setup
   static final UserController _instance = UserController._internal();
@@ -50,7 +52,15 @@ class UserController {
 
   if (response.statusCode == 200) {
     final userMap = json.decode(response.body);
-    savedUser=User.fromJson(userMap);
+    final user=User.fromJson(userMap);
+
+    final userJson=user.toJson();
+
+    final prefs=await SharedPreferences.getInstance();
+    prefs.setString('user',json.encode(userJson) );
+    prefs.setString('id', '${user.id}');
+    savedUser=user;
+
   } else {
     throw Exception('Failed to load user');
   }
