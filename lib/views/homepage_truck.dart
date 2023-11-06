@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/views/trucks.dart';
 
 class HomePageTruck extends StatefulWidget {
   const HomePageTruck({super.key, required this.name});
@@ -14,9 +15,26 @@ class HomePageTruck extends StatefulWidget {
 class _HomePageTruckState extends State<HomePageTruck> {
   int pageIndex = 0;
 
-  final pages = [
-    const HomePageTruckContent(),
-  ];
+  late List<Widget> pages;
+
+  @override
+  void initState() {
+    super.initState();
+    pages = [
+      HomePageTruckContent(
+        name: widget.name,
+        updatePageIndex: () {
+          // For demonstration purposes, changing pageIndex to 2. You can set it to any value you desire.
+          setState(() {
+            pageIndex = 1;
+          });
+        },
+      ),
+      Trucks(
+        ownerEmail: widget.name,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +133,11 @@ class _HomePageTruckState extends State<HomePageTruck> {
 }
 
 class HomePageTruckContent extends StatelessWidget {
-  const HomePageTruckContent({super.key});
+  const HomePageTruckContent(
+      {super.key, required this.name, required this.updatePageIndex});
+
+  final String name;
+  final VoidCallback updatePageIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +177,7 @@ class HomePageTruckContent extends StatelessWidget {
                             margin: EdgeInsets.fromLTRB(
                                 0 * fem, 0 * fem, 0 * fem, 8 * fem),
                             child: Text(
-                              'Welcome Pepito!',
+                              'Welcome $name!',
                               style: GoogleFonts.montserrat(
                                 fontSize: 24 * ffem,
                                 fontWeight: FontWeight.w600,
@@ -266,7 +288,7 @@ class HomePageTruckContent extends StatelessWidget {
                           ),
                           TextButton(
                             // frame47JXk (73:928)
-                            onPressed: () {},
+                            onPressed: updatePageIndex,
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                             ),
