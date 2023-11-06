@@ -10,6 +10,7 @@ dependencies:
   amazon_cognito_identity_dart_2: ^3.5.0
   flutter:
     sdk: flutter
+  connectivity_plus: ^2.0.2
   google_fonts: ^6.1.0
   http: any
   google_maps_flutter: ^2.0.3

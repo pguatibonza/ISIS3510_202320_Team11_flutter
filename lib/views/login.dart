@@ -290,6 +290,7 @@ class _LogInState extends State<LogIn> {
       _userController.SaveUser(email);
       print(UserController.savedUser);
       final userType = await authService.getUserTypeByEmail(email);
+      final userInfo = await authService.getNameByEmail(email);
       if (userType == "LO") {
         // ignore: use_build_context_synchronously
         // ignore: use_build_context_synchronously
