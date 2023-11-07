@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/controller/authservices.dart';
+import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/roles.dart';
 import 'package:tucamion/views/home_page.dart';
 import 'package:tucamion/views/theme/app_colors.dart';
@@ -279,17 +281,39 @@ class _LogInState extends State<LogIn> {
   _login() async {
     String email = _emailController.text;
     String password = _passwordController.text;
+    final authService = AuthService();
 
     String result = await _userController.authenticate(email, password);
 
     if (result == "ok") {
       // ignore: use_build_context_synchronously
-      Navigator.push(
+      _userController.SaveUser(email);
+      print(UserController.savedUser);
+      final userType = await authService.getUserTypeByEmail(email);
+      final userInfo = await authService.getNameByEmail(email);
+      if (userType == "LO") {
+        // ignore: use_build_context_synchronously
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => HomePage(
                     name: email,
-                  )));
+                  )),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HomePageTruck(
+              name: email,
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
     } else {
       // Set the error message and rebuild the widget
       setState(() {

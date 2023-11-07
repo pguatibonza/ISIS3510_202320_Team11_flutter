@@ -212,7 +212,15 @@ class Roles extends StatelessWidget {
                     ),
                     TextButton(
                       // frame47p9D (17:623)
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUp(
+                                    role: 'TO',
+                                  )),
+                        );
+                      },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                       ),

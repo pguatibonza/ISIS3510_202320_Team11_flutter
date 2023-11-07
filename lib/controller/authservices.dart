@@ -9,6 +9,7 @@ class AuthService {
   AuthService._internal();
 
   final String baseUrl = api;
+  final String baseUrl2 = api2;
 
   Future<String> register({
     required String name,
@@ -75,6 +76,42 @@ class AuthService {
       return 'ok';
     } else {
       return jsonDecode(response.body)['detail'] ?? 'Incorrect credentials.';
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserInfoByEmail(String email) async {
+    final response = await http.get(
+      Uri.parse("${baseUrl}users/email/$email"),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      print('Failed to load user info: ${response.statusCode}');
+      return null;
+    }
+  }
+
+  Future<String?> getUserTypeByEmail(String email) async {
+    final userInfo = await getUserInfoByEmail(email);
+    if (userInfo != null && userInfo.containsKey('userType')) {
+      return userInfo['userType'];
+    } else {
+      print('Failed to get userType or userType not found');
+      return null;
+    }
+  }
+
+  Future<String?> getNameByEmail(String email) async {
+    final userInfo = await getUserInfoByEmail(email);
+    if (userInfo != null && userInfo.containsKey('name')) {
+      return userInfo['name'];
+    } else {
+      print('Failed to get name or name not found');
+      return null;
     }
   }
 }

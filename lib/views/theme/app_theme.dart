@@ -9,9 +9,10 @@ class TuCamionTheme {
       brightness: Brightness.light,
       colorScheme: kColorScheme,
       appBarTheme: const AppBarTheme().copyWith(
-        backgroundColor: kColorScheme.onPrimaryContainer,
-        foregroundColor: kColorScheme.primaryContainer,
+        backgroundColor: Colors.white,
       ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData()
+          .copyWith(backgroundColor: Colors.white),
       textTheme: ThemeData().textTheme.copyWith(
             titleLarge: AppTextStyles.headline(),
             titleMedium: AppTextStyles.headline(),

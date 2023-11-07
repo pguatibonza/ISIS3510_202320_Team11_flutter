@@ -17,5 +17,16 @@ class Trip{
     required this.status
   });
 
+  factory Trip.fromJson(Map<String, dynamic> json) {
+    return Trip(
+      id: json["id"],
+      loadOwner: json["loadOwner"],
+      trailer: json["trailer"],
+      load: json["load"],
+      pickup: json["pickup"],
+      dropoff: json["dropoff"],
+      status: json["status"],
+    );
+  }
 
 }
