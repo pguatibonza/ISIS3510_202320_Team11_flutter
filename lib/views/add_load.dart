@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/controller/api.dart';
 import 'package:tucamion/controller/usercontroller.dart';
 import 'package:tucamion/models/load.dart';
@@ -169,18 +170,20 @@ class _LoadFormState extends State<LoadForm> {
     return id;
   }
   void postTrip(int loadId,int pickupId,int dropoffId) async{
-    int? userId = UserController.savedUser.id;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int userId = int.parse(prefs.getString('id')!) ;
+    print(userId);
     String status ='TA';
     try {
       http.Response response= await http.post(Uri.parse(trips),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        "load": loadId.toString(),
-        "loadOwner": userId.toString(),
-        "pickup": pickupId.toString(),
-        "dropoff": dropoffId.toString(),
+      body: jsonEncode(<String, dynamic>{
+        "load": loadId,
+        "loadOwner": userId,
+        "pickup": pickupId,
+        "dropoff": dropoffId,
         "status": status
       }));
       if (response.statusCode == 201) {
@@ -193,6 +196,8 @@ class _LoadFormState extends State<LoadForm> {
                                   HomePage(name: UserController.savedUser.name!)));
       } else {
         print("Trip not created");
+        print(response.statusCode);
+        print(response.body);
       }
     }
     catch(e){
