@@ -76,4 +76,41 @@ class TrailerController {
       return {};
     }
   }
+
+  Future<http.Response> createTruck({
+    required String plates,
+    required int capacity,
+    String? volume,
+    required String pickup,
+    required String dropoff,
+    required String status,
+    required int driver,
+    required int owner,
+  }) async {
+    final url = Uri.parse('$baseUrl/trailers');
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'plates': plates,
+        'capacity': capacity,
+        'pickup': pickup,
+        'dropoff': dropoff,
+        'status': status,
+        'type': "AN",
+        'driver': null,
+        'owner': owner,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return response;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load truck data');
+    }
+  }
 }
