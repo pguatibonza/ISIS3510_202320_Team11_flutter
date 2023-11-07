@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:ui';
@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/controller/authservices.dart';
 import 'package:tucamion/controller/truckservices.dart';
 import 'package:tucamion/models/trailer.dart';
+import 'package:tucamion/views/add_truck.dart';
 
 class Trucks extends StatefulWidget {
   const Trucks({super.key, required this.ownerEmail});
@@ -21,6 +22,7 @@ class Trucks extends StatefulWidget {
 class _TrucksState extends State<Trucks> {
   late TrailerController trailerController;
   late AuthService authController;
+  Timer? _dataRefreshTimer;
   List<Trailer> trailers = [];
   bool isLoading = true;
 
@@ -30,6 +32,23 @@ class _TrucksState extends State<Trucks> {
     trailerController = TrailerController();
     authController = AuthService();
     _initializeData();
+    _startPeriodicDataRefresh();
+  }
+
+  void _startPeriodicDataRefresh() {
+    const oneMinute = Duration(minutes: 1);
+    _dataRefreshTimer = Timer.periodic(oneMinute, (Timer timer) async {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult != ConnectivityResult.none) {
+        _fetchDataFromApi();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _dataRefreshTimer?.cancel();
+    super.dispose();
   }
 
   void _initializeData() async {
@@ -59,17 +78,16 @@ class _TrucksState extends State<Trucks> {
   }
 
   void _fetchDataFromApi() async {
-    if (mounted) setState(() => isLoading = true);
+    if (!mounted) return;
+    setState(() => isLoading = true);
 
-    List<Trailer> loadedTrailers = []; // Declare this outside the try block
+    List<Trailer> loadedTrailers = [];
 
     try {
-      // Fetch owner's details using their email
       Map<String, dynamic>? ownerDetails =
           await authController.getUserInfoByEmail(widget.ownerEmail);
       if (ownerDetails != null) {
         int ownerId = ownerDetails['id'];
-        // Fetch trailers using the owner's ID
         List<dynamic> trailersData =
             await trailerController.getTrailersByOwnerId(ownerId);
 
@@ -77,49 +95,30 @@ class _TrucksState extends State<Trucks> {
           List<dynamic> tripsData = await trailerController
               .getTripByTrailerIdAndStatus(trailerData['id'], "IP");
 
-          bool isAvailable = true;
-          Map<String, dynamic>? loadMap;
-          Map<String, dynamic>? pickupAP;
-          Map<String, dynamic>? dropoffAP;
+          bool isAvailable = tripsData.isEmpty;
+          Trailer trailer;
 
-          if (tripsData.isNotEmpty) {
-            int loadId = int.parse(tripsData[0]['load'].toString());
-            loadMap = await trailerController.getLoadById(loadId);
-            dropoffAP = await trailerController
+          if (!isAvailable) {
+            Map<String, dynamic> loadMap = await trailerController
+                .getLoadById(int.parse(tripsData[0]['load'].toString()));
+            Map<String, dynamic> dropoffAP = await trailerController
                 .getAccessPointById(tripsData[0]['dropoff']);
-            pickupAP = await trailerController
+            Map<String, dynamic> pickupAP = await trailerController
                 .getAccessPointById(tripsData[0]['pickup']);
-            isAvailable = false;
 
-            Trailer trailer = Trailer(
+            trailer = Trailer(
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
-                pickup: pickupAP['country'] +
-                    " " +
-                    pickupAP['city'] +
-                    " " +
-                    pickupAP['address'] +
-                    " | " +
-                    pickupAP['before'] +
-                    " / " +
-                    pickupAP['after'],
-                dropoff: dropoffAP['country'] +
-                    " " +
-                    dropoffAP['city'] +
-                    " " +
-                    dropoffAP['address'] +
-                    " | " +
-                    dropoffAP['before'] +
-                    " / " +
-                    dropoffAP['after'],
+                pickup:
+                    "${pickupAP['country']}, ${pickupAP['city']}, ${pickupAP['address']} | ${pickupAP['before']} / ${pickupAP['after']}",
+                dropoff:
+                    "${dropoffAP['country']}, ${dropoffAP['city']}, ${dropoffAP['address']} | ${dropoffAP['before']} / ${dropoffAP['after']}",
                 status: trailerData['status'],
                 type: trailerData['type'],
                 owner: ownerId,
                 isAvailable: isAvailable);
-
-            loadedTrailers.add(trailer);
           } else {
-            Trailer trailer = Trailer(
+            trailer = Trailer(
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup: "Not on service",
@@ -128,8 +127,9 @@ class _TrucksState extends State<Trucks> {
                 isAvailable: isAvailable,
                 type: trailerData['type'],
                 owner: ownerId);
-            loadedTrailers.add(trailer);
           }
+
+          loadedTrailers.add(trailer);
         }
 
         if (mounted) {
@@ -137,16 +137,13 @@ class _TrucksState extends State<Trucks> {
             trailers = loadedTrailers;
             isLoading = false;
           });
+          _updateCache(loadedTrailers);
         }
-
-        _updateCache(
-            trailers); // You should cache the final trailers, not the raw data
       } else {
         if (mounted) setState(() => isLoading = false);
       }
     } catch (e) {
       if (mounted) setState(() => isLoading = false);
-      // Handle error
       print(e.toString());
     }
   }
@@ -232,7 +229,7 @@ class _TrucksState extends State<Trucks> {
                             margin: EdgeInsets.fromLTRB(
                                 0 * fem, 0 * fem, 0 * fem, 2 * fem),
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: _createTruck,
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.zero,
                               ),
@@ -241,7 +238,7 @@ class _TrucksState extends State<Trucks> {
                                 height: 48 * fem,
                                 child: IconButton(
                                   enableFeedback: false,
-                                  onPressed: () {},
+                                  onPressed: _createTruck,
                                   icon: Icon(
                                     Icons.add_circle_rounded,
                                     color: Colors.blue,
@@ -274,6 +271,16 @@ class _TrucksState extends State<Trucks> {
           ),
         ),
       ),
+    );
+  }
+
+  _createTruck() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) => AddTruck(
+                name: widget.ownerEmail,
+              )),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/views/add_truck.dart';
 import 'package:tucamion/views/trucks.dart';
 
 class HomePageTruck extends StatefulWidget {
