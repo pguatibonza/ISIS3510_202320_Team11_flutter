@@ -41,7 +41,6 @@ class _HomePageTruckState extends State<HomePageTruck> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
       body: pages[pageIndex],
@@ -58,7 +57,6 @@ class _HomePageTruckState extends State<HomePageTruck> {
       width: double.infinity,
       height: 62 * fem,
       decoration: BoxDecoration(
-        color: Color(0xffffffff),
         boxShadow: [
           BoxShadow(
             color: Color(0x19000000),
@@ -152,9 +150,6 @@ class HomePageTruckContent extends StatelessWidget {
           // homepagefQv (73:917)
           padding: EdgeInsets.fromLTRB(0 * fem, 20 * fem, 0 * fem, 0 * fem),
           width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -183,7 +178,6 @@ class HomePageTruckContent extends StatelessWidget {
                                 fontSize: 24 * ffem,
                                 fontWeight: FontWeight.w600,
                                 height: 1.2000000477 * ffem / fem,
-                                color: const Color(0xff232323),
                               ),
                             ),
                           ),
@@ -194,7 +188,6 @@ class HomePageTruckContent extends StatelessWidget {
                               fontSize: 18 * ffem,
                               fontWeight: FontWeight.w600,
                               height: 1.2000000212 * ffem / fem,
-                              color: Color(0xff444444),
                             ),
                           ),
                         ],
@@ -221,8 +214,6 @@ class HomePageTruckContent extends StatelessWidget {
                                 width: double.infinity,
                                 height: 80 * fem,
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Color(0xffffffff)),
-                                  color: Color(0xffffffff),
                                   borderRadius: BorderRadius.circular(6 * fem),
                                   boxShadow: [
                                     BoxShadow(
@@ -262,22 +253,27 @@ class HomePageTruckContent extends StatelessWidget {
                                             child: Text(
                                               'Add a truck',
                                               style: GoogleFonts.montserrat(
-                                                fontSize: 14 * ffem,
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.2175 * ffem / fem,
-                                                color: Color(0xff000000),
-                                              ),
+                                                  fontSize: 14 * ffem,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.2175 * ffem / fem,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.color),
                                             ),
                                           ),
                                           Text(
                                             // earnbyregisteringatruckN8J (73:927)
                                             'Earn by registering a truck',
                                             style: GoogleFonts.montserrat(
-                                              fontSize: 12 * ffem,
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.2000000477 * ffem / fem,
-                                              color: Color(0xff000000),
-                                            ),
+                                                fontSize: 12 * ffem,
+                                                fontWeight: FontWeight.w400,
+                                                height:
+                                                    1.2000000477 * ffem / fem,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.color),
                                           ),
                                         ],
                                       ),
@@ -299,8 +295,6 @@ class HomePageTruckContent extends StatelessWidget {
                               width: double.infinity,
                               height: 80 * fem,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xffffffff)),
-                                color: Color(0xffffffff),
                                 borderRadius: BorderRadius.circular(6 * fem),
                                 boxShadow: [
                                   BoxShadow(
@@ -340,22 +334,26 @@ class HomePageTruckContent extends StatelessWidget {
                                           child: Text(
                                             'Manage your trucks',
                                             style: GoogleFonts.montserrat(
-                                              fontSize: 14 * ffem,
-                                              fontWeight: FontWeight.w600,
-                                              height: 1.2175 * ffem / fem,
-                                              color: Color(0xff000000),
-                                            ),
+                                                fontSize: 14 * ffem,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2175 * ffem / fem,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.color),
                                           ),
                                         ),
                                         Text(
                                           // seethestatusofyourtrucksvSe (73:932)
                                           'See the status of your trucks',
                                           style: GoogleFonts.montserrat(
-                                            fontSize: 12 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2000000477 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
+                                              fontSize: 12 * ffem,
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.2000000477 * ffem / fem,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.color),
                                         ),
                                       ],
                                     ),

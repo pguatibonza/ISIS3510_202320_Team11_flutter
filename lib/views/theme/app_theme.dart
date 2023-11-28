@@ -14,21 +14,33 @@ class TuCamionTheme {
       bottomNavigationBarTheme: const BottomNavigationBarThemeData()
           .copyWith(backgroundColor: Colors.white),
       textTheme: ThemeData().textTheme.copyWith(
-            titleLarge: AppTextStyles.headline(),
-            titleMedium: AppTextStyles.headline(),
-            titleSmall: AppTextStyles.headline(),
-            headlineLarge: AppTextStyles.subheading(),
-            headlineSmall: AppTextStyles.subheading(),
-            headlineMedium: AppTextStyles.subheading(),
-            bodyLarge: AppTextStyles.body(),
-            bodyMedium: AppTextStyles.body(),
-            bodySmall: AppTextStyles.body(),
-            labelLarge: AppTextStyles.button(),
-            labelMedium: AppTextStyles.button(),
-            labelSmall: AppTextStyles.button(),
-            displayLarge: AppTextStyles.caption(),
-            displayMedium: AppTextStyles.caption(),
-            displaySmall: AppTextStyles.caption(),
+            titleLarge:
+                AppTextStyles.headline().copyWith(color: Color(0xff424242)),
+            titleMedium:
+                AppTextStyles.headline().copyWith(color: Color(0xff424242)),
+            titleSmall:
+                AppTextStyles.headline().copyWith(color: Color(0xff424242)),
+            headlineLarge:
+                AppTextStyles.subheading().copyWith(color: Color(0xff424242)),
+            headlineMedium:
+                AppTextStyles.subheading().copyWith(color: Color(0xff424242)),
+            headlineSmall:
+                AppTextStyles.subheading().copyWith(color: Color(0xff424242)),
+            bodyLarge: AppTextStyles.body().copyWith(color: Color(0xff424242)),
+            bodyMedium: AppTextStyles.body().copyWith(color: Color(0xff424242)),
+            bodySmall: AppTextStyles.body().copyWith(color: Color(0xff424242)),
+            labelLarge:
+                AppTextStyles.button().copyWith(color: Color(0xff424242)),
+            labelMedium:
+                AppTextStyles.button().copyWith(color: Color(0xff424242)),
+            labelSmall:
+                AppTextStyles.button().copyWith(color: Color(0xff424242)),
+            displayLarge:
+                AppTextStyles.caption().copyWith(color: Color(0xff424242)),
+            displayMedium:
+                AppTextStyles.caption().copyWith(color: Color(0xff424242)),
+            displaySmall:
+                AppTextStyles.caption().copyWith(color: Color(0xff424242)),
           ),
     );
   }
@@ -45,9 +57,27 @@ class TuCamionTheme {
         backgroundColor: darkBackground,
         foregroundColor: darkOnBackground,
       ),
-      textTheme: ThemeData.dark()
-          .textTheme, // Use Flutter's dark default text themes and customize if needed.
-      // Add other theme customization if needed.
+      textTheme: ThemeData.dark().textTheme.copyWith(
+            titleLarge: AppTextStyles.headline().copyWith(color: Colors.white),
+            titleMedium: AppTextStyles.headline().copyWith(color: Colors.white),
+            titleSmall: AppTextStyles.headline().copyWith(color: Colors.white),
+            headlineLarge:
+                AppTextStyles.subheading().copyWith(color: Colors.white),
+            headlineMedium:
+                AppTextStyles.subheading().copyWith(color: Colors.white),
+            headlineSmall:
+                AppTextStyles.subheading().copyWith(color: Colors.white),
+            bodyLarge: AppTextStyles.body().copyWith(color: Colors.white),
+            bodyMedium: AppTextStyles.body().copyWith(color: Colors.white),
+            bodySmall: AppTextStyles.body().copyWith(color: Colors.white),
+            labelLarge: AppTextStyles.button().copyWith(color: Colors.white),
+            labelMedium: AppTextStyles.button().copyWith(color: Colors.white),
+            labelSmall: AppTextStyles.button().copyWith(color: Colors.white),
+            displayLarge: AppTextStyles.caption().copyWith(color: Colors.white),
+            displayMedium:
+                AppTextStyles.caption().copyWith(color: Colors.white),
+            displaySmall: AppTextStyles.caption().copyWith(color: Colors.white),
+          ),
     );
   }
 }

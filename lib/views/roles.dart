@@ -18,9 +18,6 @@ class Roles extends StatelessWidget {
           // signinkSs (17:610)
           padding: EdgeInsets.fromLTRB(16 * fem, 80 * fem, 16 * fem, 294 * fem),
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -31,11 +28,10 @@ class Roles extends StatelessWidget {
                 child: Text(
                   'What would you like to do?',
                   style: GoogleFonts.montserrat(
-                    fontSize: 18 * ffem,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2000000212 * ffem / fem,
-                    color: const Color(0xff232323),
-                  ),
+                      fontSize: 18 * ffem,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2000000212 * ffem / fem,
+                      color: Theme.of(context).textTheme.bodyMedium?.color),
                 ),
               ),
               SizedBox(
@@ -64,8 +60,6 @@ class Roles extends StatelessWidget {
                         width: double.infinity,
                         height: 80 * fem,
                         decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xffffffff)),
-                          color: const Color(0xffffffff),
                           borderRadius: BorderRadius.circular(6 * fem),
                           boxShadow: [
                             BoxShadow(
@@ -104,22 +98,26 @@ class Roles extends StatelessWidget {
                                     child: Text(
                                       'Send packages',
                                       style: GoogleFonts.montserrat(
-                                        fontSize: 14 * ffem,
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.2175 * ffem / fem,
-                                        color: const Color(0xff000000),
-                                      ),
+                                          fontSize: 14 * ffem,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.2175 * ffem / fem,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.color),
                                     ),
                                   ),
                                   Text(
                                     // getyourloadsdeliveredbyourtruc (17:617)
                                     'Get your loads delivered by our trucks',
                                     style: GoogleFonts.montserrat(
-                                      fontSize: 12 * ffem,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.2000000477 * ffem / fem,
-                                      color: const Color(0xff000000),
-                                    ),
+                                        fontSize: 12 * ffem,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.2000000477 * ffem / fem,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.color),
                                   ),
                                 ],
                               ),
@@ -143,8 +141,6 @@ class Roles extends StatelessWidget {
                         width: double.infinity,
                         height: 80 * fem,
                         decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xffffffff)),
-                          color: const Color(0xffffffff),
                           borderRadius: BorderRadius.circular(6 * fem),
                           boxShadow: [
                             BoxShadow(
@@ -183,22 +179,26 @@ class Roles extends StatelessWidget {
                                     child: Text(
                                       'Earn by delivering',
                                       style: GoogleFonts.montserrat(
-                                        fontSize: 14 * ffem,
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.2175 * ffem / fem,
-                                        color: const Color(0xff000000),
-                                      ),
+                                          fontSize: 14 * ffem,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.2175 * ffem / fem,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.color),
                                     ),
                                   ),
                                   Text(
                                     // becomeoneofourdrivershaP (17:622)
                                     'Become one of our drivers',
                                     style: GoogleFonts.montserrat(
-                                      fontSize: 12 * ffem,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.2000000477 * ffem / fem,
-                                      color: const Color(0xff000000),
-                                    ),
+                                        fontSize: 12 * ffem,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.2000000477 * ffem / fem,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.color),
                                   ),
                                 ],
                               ),
@@ -230,8 +230,6 @@ class Roles extends StatelessWidget {
                         width: double.infinity,
                         height: 80 * fem,
                         decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xffffffff)),
-                          color: const Color(0xffffffff),
                           borderRadius: BorderRadius.circular(6 * fem),
                           boxShadow: [
                             BoxShadow(
@@ -270,22 +268,26 @@ class Roles extends StatelessWidget {
                                     child: Text(
                                       'Rent your truck',
                                       style: GoogleFonts.montserrat(
-                                        fontSize: 14 * ffem,
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.2175 * ffem / fem,
-                                        color: const Color(0xff000000),
-                                      ),
+                                          fontSize: 14 * ffem,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.2175 * ffem / fem,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.color),
                                     ),
                                   ),
                                   Text(
                                     // earnbylettingsomeoneelsedrivei (17:627)
                                     'Earn by letting someone else drive it',
                                     style: GoogleFonts.montserrat(
-                                      fontSize: 12 * ffem,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.2000000477 * ffem / fem,
-                                      color: const Color(0xff000000),
-                                    ),
+                                        fontSize: 12 * ffem,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.2000000477 * ffem / fem,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.color),
                                   ),
                                 ],
                               ),
