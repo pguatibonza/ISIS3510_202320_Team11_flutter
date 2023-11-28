@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/views/homepage_truck.dart';
@@ -40,9 +41,6 @@ class _SignUpState extends State<SignUp> {
           // signinCNb (17:598)
           padding: EdgeInsets.fromLTRB(40 * fem, 72 * fem, 45 * fem, 77 * fem),
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -56,7 +54,6 @@ class _SignUpState extends State<SignUp> {
                     fontSize: 24 * ffem,
                     fontWeight: FontWeight.w600,
                     height: 1.2000000477 * ffem / fem,
-                    color: const Color(0xff232323),
                   ),
                 ),
               ),
@@ -310,11 +307,13 @@ class _SignUpState extends State<SignUp> {
                               textAlign: TextAlign.center,
                               text: TextSpan(
                                 style: GoogleFonts.montserrat(
-                                  fontSize: 14 * ffem,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.2189999989 * ffem / fem,
-                                  color: const Color(0xff232323),
-                                ),
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.2189999989 * ffem / fem,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color),
                                 children: [
                                   TextSpan(
                                     text: 'Already have an account?',
@@ -322,7 +321,6 @@ class _SignUpState extends State<SignUp> {
                                       fontSize: 14 * ffem,
                                       fontWeight: FontWeight.w400,
                                       height: 1.2175 * ffem / fem,
-                                      color: const Color(0xff232323),
                                     ),
                                   ),
                                   TextSpan(
@@ -331,7 +329,6 @@ class _SignUpState extends State<SignUp> {
                                       fontSize: 14 * ffem,
                                       fontWeight: FontWeight.w700,
                                       height: 1.2175 * ffem / fem,
-                                      color: const Color(0xff232323),
                                     ),
                                   ),
                                   TextSpan(
@@ -361,6 +358,30 @@ class _SignUpState extends State<SignUp> {
   }
 
   _signUp() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // No internet connection, show a popup modal notifying the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Internet Connection'),
+            content: Text(
+                'You are not connected to the internet. Please try again when you have an internet connection.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return; // Stop the function execution here
+    }
+
     String name = _nameController.text;
     String email = _emailController.text;
     String phone = _phoneController.text;
@@ -376,6 +397,8 @@ class _SignUpState extends State<SignUp> {
       phone: phone,
       userType: widget.role,
     );
+
+    print(result);
 
     if (result == "ok") {
       // ignore: use_build_context_synchronousl

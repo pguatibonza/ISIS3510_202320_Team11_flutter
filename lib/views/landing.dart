@@ -19,9 +19,6 @@ class Landing extends StatelessWidget {
           // landingPsD (17:577)
           padding: EdgeInsets.fromLTRB(38 * fem, 116 * fem, 38 * fem, 73 * fem),
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -36,7 +33,6 @@ class Landing extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     height: 1.2175 * ffem / fem,
                     letterSpacing: 2.88 * fem,
-                    color: Color(0xff424242),
                   ),
                 ),
               ),
@@ -126,7 +122,6 @@ class Landing extends StatelessWidget {
                     fontSize: 14 * ffem,
                     fontWeight: FontWeight.w400,
                     height: 1.2000000817 * ffem / fem,
-                    color: const Color(0xff232323),
                   ),
                 ),
               ),
@@ -137,45 +132,40 @@ class Landing extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      // frame33LLX (17:581)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LogIn()),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        child: Container(
-                          width: double.infinity,
-                          height: 49 * fem,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(35 * fem),
-                            gradient: const LinearGradient(
-                              begin: Alignment(1, -0),
-                              end: Alignment(-1, 0),
-                              colors: <Color>[
-                                Color(0xff2d7eff),
-                                Color(0xff2faaff)
-                              ],
-                              stops: <double>[0, 1],
-                            ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LogIn()),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 49 * fem,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35 * fem),
+                          gradient: const LinearGradient(
+                            begin: Alignment(1, -0),
+                            end: Alignment(-1, 0),
+                            colors: <Color>[
+                              Color(0xff2d7eff),
+                              Color(0xff2faaff)
+                            ],
+                            stops: <double>[0, 1],
                           ),
-                          child: Center(
-                            child: Text(
-                              'Log in',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.montserrat(
-                                fontSize: 14 * ffem,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2175 * ffem / fem,
-                                color: const Color(0xffffffff),
-                              ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Log in',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 14 * ffem,
+                              fontWeight: FontWeight.w700,
+                              height: 1.2175 * ffem / fem,
+                              color: const Color(0xffffffff),
                             ),
                           ),
                         ),
@@ -196,11 +186,13 @@ class Landing extends StatelessWidget {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: GoogleFonts.montserrat(
-                            fontSize: 12 * ffem,
-                            fontWeight: FontWeight.w400,
-                            height: 1.2000000477 * ffem / fem,
-                            color: const Color(0xff232323),
-                          ),
+                              fontSize: 12 * ffem,
+                              fontWeight: FontWeight.w400,
+                              height: 1.2000000477 * ffem / fem,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.color),
                           children: [
                             TextSpan(
                               text: 'Don\'t ',
@@ -208,7 +200,6 @@ class Landing extends StatelessWidget {
                                 fontSize: 12 * ffem,
                                 fontWeight: FontWeight.w400,
                                 height: 1.2000000477 * ffem / fem,
-                                color: const Color(0xff232323),
                               ),
                             ),
                             TextSpan(
@@ -217,7 +208,6 @@ class Landing extends StatelessWidget {
                                 fontSize: 12 * ffem,
                                 fontWeight: FontWeight.w400,
                                 height: 1.2000000477 * ffem / fem,
-                                color: const Color(0xff232323),
                               ),
                             ),
                             TextSpan(
@@ -226,7 +216,6 @@ class Landing extends StatelessWidget {
                                 fontSize: 12 * ffem,
                                 fontWeight: FontWeight.w400,
                                 height: 1.2000000477 * ffem / fem,
-                                color: const Color(0xff232323),
                               ),
                             ),
                             TextSpan(

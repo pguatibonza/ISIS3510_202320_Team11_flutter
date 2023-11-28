@@ -39,7 +39,6 @@ class _AddTruckState extends State<AddTruck> {
     double ffem = fem * 0.97;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
       body: Material(
@@ -49,381 +48,319 @@ class _AddTruckState extends State<AddTruck> {
             // edittruckNzW (73:1153)
             padding:
                 EdgeInsets.fromLTRB(16 * fem, 17 * fem, 16 * fem, 15 * fem),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Color(0xffffffff),
-            ),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  // west6Qi (73:1173)
-                  margin:
-                      EdgeInsets.fromLTRB(2 * fem, 0 * fem, 0 * fem, 9 * fem),
-                  width: 20 * fem,
-                  height: 14 * fem,
-                  child: Icon(
-                    Icons.west,
-                    color: Colors.grey[900],
-                    size: 24,
-                  ),
-                ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Positioned(
-                          // frame60YXc (73:1154)
-                          left: 0 * fem,
-                          top: 0 * fem,
-                          child: Container(
-                            width: 328 * fem,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  // edittruckFS2 (73:1155)
-                                  'Add Truck',
+                        Text(
+                          // edittruckFS2 (73:1155)
+                          'Add Truck',
+                          style: GoogleFonts.montserrat(
+                            fontSize: 24 * ffem,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2000000477 * ffem / fem,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16 * fem,
+                        ),
+                        Container(
+                          // frame37B4n (73:1156)
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                // inputhYv (73:1157)
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _platesController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Plates',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 24 * ffem,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.2000000477 * ffem / fem,
-                                    color: Color(0xff232323),
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 16 * fem,
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
                                 ),
-                                Container(
-                                  // frame37B4n (73:1156)
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        // inputhYv (73:1157)
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _platesController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Plates',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _capacityController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Capacity (LT)',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _pickupCountryController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Pick up country',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _pickupCityController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Pick up city',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _pickupAddressController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Pick up address',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _dropoffCountryController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Drop off country',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _dropoffCityController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Drop off city',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        // inputbGv (82:1702)
-                                        width: double.infinity,
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30 * fem),
-                                          color: Color(0xffefebeb),
-                                        ),
-                                        child: TextField(
-                                          controller: _dropoffAddressController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                16 * fem,
-                                                16 * fem,
-                                                16 * fem,
-                                                15 * fem),
-                                            hintText: 'Drop off address',
-                                            hintStyle: TextStyle(
-                                                color: Color(0xff232323)),
-                                          ),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 14 * ffem,
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.2175 * ffem / fem,
-                                            color: Color(0xff000000),
-                                          ),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          validateAndSubmitForm(context);
-                                        },
-                                        style: TextButton.styleFrom(
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        child: Container(
-                                          width: 275 * fem,
-                                          height: 52 * fem,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(35 * fem),
-                                            gradient: LinearGradient(
-                                              begin: Alignment(1, -0),
-                                              end: Alignment(-1, 0),
-                                              colors: <Color>[
-                                                Color(0xff2d7eff),
-                                                Color(0xff2faaff)
-                                              ],
-                                              stops: <double>[0, 1],
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'Save',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 16 * ffem,
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.2175 * ffem / fem,
-                                                color: Color(0xffffffff),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                child: TextField(
+                                  controller: _capacityController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Capacity (LT)',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _pickupCountryController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Pick up country',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _pickupCityController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Pick up city',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _pickupAddressController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Pick up address',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _dropoffCountryController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Drop off country',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _dropoffCityController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Drop off city',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                // inputbGv (82:1702)
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30 * fem),
+                                  color: Color(0xffefebeb),
+                                ),
+                                child: TextField(
+                                  controller: _dropoffAddressController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
+                                    hintText: 'Drop off address',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff232323)),
+                                  ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2175 * ffem / fem,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  validateAndSubmitForm(context);
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                ),
+                                child: Container(
+                                  width: 275 * fem,
+                                  height: 52 * fem,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(35 * fem),
+                                    gradient: LinearGradient(
+                                      begin: Alignment(1, -0),
+                                      end: Alignment(-1, 0),
+                                      colors: <Color>[
+                                        Color(0xff2d7eff),
+                                        Color(0xff2faaff)
+                                      ],
+                                      stops: <double>[0, 1],
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Save',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 16 * ffem,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.2175 * ffem / fem,
+                                        color: Color(0xffffffff),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

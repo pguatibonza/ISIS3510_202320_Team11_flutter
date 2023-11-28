@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/controller/authservices.dart';
@@ -36,9 +37,6 @@ class _LogInState extends State<LogIn> {
           padding:
               EdgeInsets.fromLTRB(37 * fem, 143 * fem, 38 * fem, 123 * fem),
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -52,7 +50,6 @@ class _LogInState extends State<LogIn> {
                     fontSize: 24 * ffem,
                     fontWeight: FontWeight.w600,
                     height: 1.2000000477 * ffem / fem,
-                    color: const Color(0xff232323),
                   ),
                 ),
               ),
@@ -215,11 +212,10 @@ class _LogInState extends State<LogIn> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: GoogleFonts.montserrat(
-                        fontSize: 14 * ffem,
-                        fontWeight: FontWeight.w400,
-                        height: 1.2189999989 * ffem / fem,
-                        color: const Color(0xff232323),
-                      ),
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2189999989 * ffem / fem,
+                          color: Theme.of(context).textTheme.bodyMedium?.color),
                       children: [
                         TextSpan(
                           text: 'Don\'t ',
@@ -227,7 +223,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -236,7 +231,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -245,7 +239,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -254,7 +247,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -279,8 +271,33 @@ class _LogInState extends State<LogIn> {
   }
 
   _login() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // No internet connection, show a popup modal notifying the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Internet Connection'),
+            content: Text(
+                'You are not connected to the internet. Please try again when you have an internet connection.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return; // Stop the function execution here
+    }
+
     String email = _emailController.text;
     String password = _passwordController.text;
+
     final authService = AuthService();
 
     String result = await _userController.authenticate(email, password);

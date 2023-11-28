@@ -53,7 +53,7 @@ class TimeController implements Subject {
 
   Stream<int> timeStream() async* {
     while (true) {
-      await Future.delayed(Duration(minutes: 1));
+      await Future.delayed(Duration(seconds: 10));
       yield DateTime.now().hour;
     }
   }

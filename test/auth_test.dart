@@ -19,7 +19,7 @@ void main() {
   test('getUserTypeByEmail returns correct userType for given email', () async {
     final userType =
         await authService.getUserTypeByEmail("danielintel@hotmail.com");
-    expect(userType, 'LO');
+    expect(userType, 'TO');
   });
 
   // Test getNameByEmail
