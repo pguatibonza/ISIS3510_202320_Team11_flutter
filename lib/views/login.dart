@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -295,47 +297,70 @@ class _LogInState extends State<LogIn> {
       return; // Stop the function execution here
     }
 
-    String email = _emailController.text;
-    String password = _passwordController.text;
-
-    final authService = AuthService();
-
-    String result = await _userController.authenticate(email, password);
-
-    if (result == "ok") {
-      // ignore: use_build_context_synchronously
-      _userController.SaveUser(email);
-      print(UserController.savedUser);
-      final userType = await authService.getUserTypeByEmail(email);
-      final userInfo = await authService.getNameByEmail(email);
-      if (userType == "LO") {
-        // ignore: use_build_context_synchronously
-        // ignore: use_build_context_synchronously
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(
-                    name: email,
-                  )),
-          (Route<dynamic> route) => false,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(child: CircularProgressIndicator()),
         );
-      } else {
+      },
+    );
+
+    try {
+      String email = _emailController.text;
+      String password = _passwordController.text;
+
+      String result = await _userController
+          .authenticate(email, password)
+          .timeout(Duration(seconds: 10));
+      final authService = AuthService();
+
+      if (result == "ok") {
         // ignore: use_build_context_synchronously
+        _userController.SaveUser(email);
+        final userType = await authService.getUserTypeByEmail(email);
+        final userInfo = await authService.getNameByEmail(email);
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => HomePageTruck(
-              name: email,
-            ),
+            builder: (BuildContext context) => userType == "LO"
+                ? HomePage(name: email)
+                : HomePageTruck(name: email),
           ),
           (Route<dynamic> route) => false,
         );
+      } else {
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _errorMessage = result;
+        });
       }
-    } else {
-      // Set the error message and rebuild the widget
-      setState(() {
-        _errorMessage = result;
-      });
+    } on TimeoutException catch (_) {
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content:
+                Text('Something went wrong with our services. Try again later'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    } catch (e) {
+      // Handle other exceptions
+      // You can show another dialog or handle the exception as needed
     }
   }
 }

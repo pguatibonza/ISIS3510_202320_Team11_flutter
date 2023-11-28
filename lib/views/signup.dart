@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -382,56 +384,91 @@ class _SignUpState extends State<SignUp> {
       return; // Stop the function execution here
     }
 
-    String name = _nameController.text;
-    String email = _emailController.text;
-    String phone = _phoneController.text;
-    String password = _passwordController.text;
-    String confirmPassword = _passwordConfirmController.text;
-
-    String result = await _userController.register(
-      name: name,
-      lastName: ".",
-      email: email,
-      password: password,
-      passwordConfirmation: confirmPassword,
-      phone: phone,
-      userType: widget.role,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(child: CircularProgressIndicator()),
+        );
+      },
     );
 
-    print(result);
+    try {
+      String name = _nameController.text;
+      String email = _emailController.text;
+      String phone = _phoneController.text;
+      String password = _passwordController.text;
+      String confirmPassword = _passwordConfirmController.text;
 
-    if (result == "ok") {
-      // ignore: use_build_context_synchronousl
+      String result = await _userController
+          .register(
+            name: name,
+            lastName: ".",
+            email: email,
+            password: password,
+            passwordConfirmation: confirmPassword,
+            phone: phone,
+            userType: widget.role,
+          )
+          .timeout(Duration(seconds: 10));
 
-      if (widget.role == "LO") {
-        print(widget.role);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePage(
-              name: email,
+      if (result == "ok") {
+        // ignore: use_build_context_synchronousl
+        _userController.SaveUser(email);
+        if (widget.role == "LO") {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePage(
+                name: email,
+              ),
             ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+            (Route<dynamic> route) => false,
+          );
+        } else {
+          // ignore: use_build_context_synchronously
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePageTruck(
+                name: email,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        }
       } else {
-        // ignore: use_build_context_synchronously
-        print(widget.role);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePageTruck(
-              name: email,
-            ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _errorMessage = result;
+        });
       }
-    } else {
-      // Set the error message and rebuild the widget
-      setState(() {
-        _errorMessage = result;
-      });
+    } on TimeoutException catch (_) {
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content:
+                Text('Something went wrong with our services. Try again later'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    } catch (e) {
+      // Handle other exceptions
+      // You can show another dialog or handle the exception as needed
     }
   }
 }

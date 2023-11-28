@@ -53,7 +53,17 @@ class AuthService {
         response.statusCode == 204) {
       return 'ok';
     } else {
-      return jsonDecode(response.body)['detail'] ?? 'Unknown error occurred.';
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+      List<String> errorMessages = [];
+
+      responseBody.forEach((key, value) {
+        if (value is List) {
+          errorMessages.add(value.join(', '));
+        } else {
+          errorMessages.add(value.toString());
+        }
+      });
+      return errorMessages.join('; ');
     }
   }
 
@@ -75,7 +85,17 @@ class AuthService {
     if (response.statusCode == 200) {
       return 'ok';
     } else {
-      return jsonDecode(response.body)['detail'] ?? 'Incorrect credentials.';
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+      List<String> errorMessages = [];
+
+      responseBody.forEach((key, value) {
+        if (value is List) {
+          errorMessages.add(value.join(', '));
+        } else {
+          errorMessages.add(value.toString());
+        }
+      });
+      return errorMessages.join('; ');
     }
   }
 
