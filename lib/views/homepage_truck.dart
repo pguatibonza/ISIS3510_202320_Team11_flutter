@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/views/add_truck.dart';
+import 'package:tucamion/views/profile.dart';
 import 'package:tucamion/views/trucks.dart';
 
 class HomePageTruck extends StatefulWidget {
@@ -23,17 +27,25 @@ class _HomePageTruckState extends State<HomePageTruck> {
     super.initState();
     pages = [
       HomePageTruckContent(
-        name: widget.name,
-        updatePageIndex: () {
-          // For demonstration purposes, changing pageIndex to 2. You can set it to any value you desire.
-          setState(() {
-            pageIndex = 1;
-          });
-        },
-      ),
+          name: widget.name,
+          updatePageIndex: () {
+            setState(() {
+              pageIndex = 1;
+            });
+          },
+          createTruck: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AddTruck(
+                        name: widget.name,
+                      )),
+            );
+          }),
       Trucks(
         ownerEmail: widget.name,
       ),
+      Profile(name: widget.name)
     ];
   }
 
@@ -60,7 +72,7 @@ class _HomePageTruckState extends State<HomePageTruck> {
         boxShadow: [
           BoxShadow(
             color: Color(0x19000000),
-            offset: Offset(0 * fem, -2 * fem),
+            offset: Offset(0 * fem, 0 * fem),
             blurRadius: 4 * fem,
           ),
         ],
@@ -133,10 +145,23 @@ class _HomePageTruckState extends State<HomePageTruck> {
 
 class HomePageTruckContent extends StatelessWidget {
   const HomePageTruckContent(
-      {super.key, required this.name, required this.updatePageIndex});
+      {super.key,
+      required this.name,
+      required this.updatePageIndex,
+      required this.createTruck});
 
   final String name;
   final VoidCallback updatePageIndex;
+  final Function() createTruck;
+
+  Future<String?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Retrieve the JSON string
+    String? userJsonString = prefs.getString('user');
+    dynamic userJson = jsonDecode(userJsonString!);
+    return userJson["name"];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,18 +194,38 @@ class HomePageTruckContent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            // welcomepepitoQmp (73:920)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 8 * fem),
-                            child: Text(
-                              'Welcome $name!',
-                              style: GoogleFonts.montserrat(
-                                fontSize: 24 * ffem,
-                                fontWeight: FontWeight.w600,
-                                height: 1.2000000477 * ffem / fem,
-                              ),
-                            ),
-                          ),
+                              // welcomepepitoQmp (73:920)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 0 * fem, 8 * fem),
+                              child: FutureBuilder<String?>(
+                                future: getUser(), // Call getUser() here
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String?> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    // Show a placeholder or loading indicator while waiting
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    // Handle any errors here
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    // Display the retrieved name
+                                    String name = snapshot.data ??
+                                        'User'; // Default name if null
+                                    return Text(
+                                      'Welcome $name!',
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 24 * ffem,
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.2000000477 * ffem / fem,
+                                      ),
+                                    );
+                                  } else {
+                                    // Handle the case when there's no data
+                                    return Text('No user data found');
+                                  }
+                                },
+                              )),
                           Text(
                             // servicesW4A (73:921)
                             'Services',
@@ -204,7 +249,7 @@ class HomePageTruckContent extends StatelessWidget {
                             margin: EdgeInsets.fromLTRB(
                                 0 * fem, 0 * fem, 0 * fem, 10 * fem),
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: createTruck,
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.zero,
                               ),
