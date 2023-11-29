@@ -110,7 +110,7 @@ class AuthService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
     } else {
-      print('Failed to load user info: ${response.statusCode}');
+      print('Failed to load user info: ${response.body}');
       return null;
     }
   }

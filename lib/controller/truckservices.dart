@@ -108,9 +108,21 @@ class TrailerController {
     if (response.statusCode == 201) {
       return response;
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load truck data');
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+      List<String> errorMessages = [];
+
+      responseBody.forEach((key, value) {
+        if (value is List) {
+          // Join list values with a comma and prepend the key
+          String errorMessage = key + ': ' + value.join(', ');
+          errorMessages.add(errorMessage);
+        } else {
+          // Convert the value to string and prepend the key
+          String errorMessage = key + ': ' + value.toString();
+          errorMessages.add(errorMessage);
+        }
+      });
+      throw Exception('Failed to load truck data: ' + errorMessages.join('; '));
     }
   }
 }

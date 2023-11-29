@@ -207,7 +207,7 @@ class HomePageTruckContent extends StatelessWidget {
                                     return CircularProgressIndicator();
                                   } else if (snapshot.hasError) {
                                     // Handle any errors here
-                                    return Text('Error: ${snapshot.error}');
+                                    return Text('Welcome!');
                                   } else if (snapshot.hasData) {
                                     // Display the retrieved name
                                     String name = snapshot.data ??
@@ -222,7 +222,7 @@ class HomePageTruckContent extends StatelessWidget {
                                     );
                                   } else {
                                     // Handle the case when there's no data
-                                    return Text('No user data found');
+                                    return Text('Welcome!');
                                   }
                                 },
                               )),
