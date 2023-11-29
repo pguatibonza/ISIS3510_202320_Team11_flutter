@@ -3,8 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tucamion/controller/authservices.dart';
 import 'package:tucamion/controller/truckservices.dart';
+import 'package:tucamion/views/location_picker.dart';
 
 class AddTruck extends StatefulWidget {
   const AddTruck({super.key, required this.name});
@@ -20,17 +22,11 @@ class AddTruck extends StatefulWidget {
 class _AddTruckState extends State<AddTruck> {
   final TextEditingController _platesController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
-  final TextEditingController _pickupCountryController =
-      TextEditingController();
-  final TextEditingController _pickupCityController = TextEditingController();
-  final TextEditingController _pickupAddressController =
-      TextEditingController();
-  final TextEditingController _dropoffCountryController =
-      TextEditingController();
-  final TextEditingController _dropoffCityController = TextEditingController();
-  final TextEditingController _dropoffAddressController =
-      TextEditingController();
+
+  LatLng? _lastSelectedPickupLocation;
+  String _lastSelectedPickupAddress = "";
+  LatLng? _lastSelectedDropoffLocation;
+  String _lastSelectedDropoffAddress = "";
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +121,7 @@ class _AddTruckState extends State<AddTruck> {
                                     disabledBorder: InputBorder.none,
                                     contentPadding: EdgeInsets.fromLTRB(
                                         16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Capacity (LT)',
+                                    hintText: 'Capacity (KG)',
                                     hintStyle:
                                         TextStyle(color: Color(0xff232323)),
                                   ),
@@ -137,191 +133,131 @@ class _AddTruckState extends State<AddTruck> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                // inputbGv (82:1702)
-                                width: double.infinity,
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30 * fem),
-                                  color: Color(0xffefebeb),
+                              Text(
+                                "Pick up location",
+                                textAlign: TextAlign.left,
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 16 * ffem,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.2175 * ffem / fem,
+                                  color: Color(0xff000000),
                                 ),
-                                child: TextField(
-                                  controller: _pickupCountryController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Pick up country',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff232323)),
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showLocationPicker(context,
+                                      (LatLng location, String address) {
+                                    setState(() {
+                                      _lastSelectedPickupLocation = location;
+                                      _lastSelectedPickupAddress = address;
+                                    });
+                                    print(
+                                        'Selected location: $location with address: $address');
+                                  },
+                                      _lastSelectedPickupLocation ??
+                                          LatLng(4.60971,
+                                              -74.08175)); // Default or last selected location
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 14 * ffem,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2175 * ffem / fem,
-                                    color: Color(0xff000000),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _lastSelectedPickupAddress.isNotEmpty
+                                              ? _lastSelectedPickupAddress
+                                              : 'Bogotá, Colombia', // Default text
+                                          style: TextStyle(fontSize: 16),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(Icons.search, color: Colors.blue),
+                                    ],
                                   ),
                                 ),
                               ),
-                              Container(
-                                // inputbGv (82:1702)
-                                width: double.infinity,
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30 * fem),
-                                  color: Color(0xffefebeb),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Text(
+                                "Drop off location",
+                                textAlign: TextAlign.left,
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 16 * ffem,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.2175 * ffem / fem,
+                                  color: Color(0xff000000),
                                 ),
-                                child: TextField(
-                                  controller: _pickupCityController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Pick up city',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff232323)),
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showLocationPicker(context,
+                                      (LatLng location, String address) {
+                                    setState(() {
+                                      _lastSelectedDropoffLocation = location;
+                                      _lastSelectedDropoffAddress = address;
+                                    });
+                                    print(
+                                        'Selected location: $location with address: $address');
+                                  },
+                                      _lastSelectedDropoffLocation ??
+                                          LatLng(4.60971,
+                                              -74.08175)); // Default or last selected location
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 14 * ffem,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2175 * ffem / fem,
-                                    color: Color(0xff000000),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _lastSelectedDropoffAddress.isNotEmpty
+                                              ? _lastSelectedDropoffAddress
+                                              : 'Bogotá, Colombia', // Default text
+                                          style: TextStyle(fontSize: 16),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(Icons.search, color: Colors.blue),
+                                    ],
                                   ),
                                 ),
                               ),
-                              Container(
-                                // inputbGv (82:1702)
-                                width: double.infinity,
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30 * fem),
-                                  color: Color(0xffefebeb),
-                                ),
-                                child: TextField(
-                                  controller: _pickupAddressController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Pick up address',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff232323)),
-                                  ),
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 14 * ffem,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2175 * ffem / fem,
-                                    color: Color(0xff000000),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                // inputbGv (82:1702)
-                                width: double.infinity,
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30 * fem),
-                                  color: Color(0xffefebeb),
-                                ),
-                                child: TextField(
-                                  controller: _dropoffCountryController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Drop off country',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff232323)),
-                                  ),
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 14 * ffem,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2175 * ffem / fem,
-                                    color: Color(0xff000000),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                // inputbGv (82:1702)
-                                width: double.infinity,
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30 * fem),
-                                  color: Color(0xffefebeb),
-                                ),
-                                child: TextField(
-                                  controller: _dropoffCityController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Drop off city',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff232323)),
-                                  ),
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 14 * ffem,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2175 * ffem / fem,
-                                    color: Color(0xff000000),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                // inputbGv (82:1702)
-                                width: double.infinity,
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 16 * fem),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30 * fem),
-                                  color: Color(0xffefebeb),
-                                ),
-                                child: TextField(
-                                  controller: _dropoffAddressController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        16 * fem, 16 * fem, 16 * fem, 15 * fem),
-                                    hintText: 'Drop off address',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff232323)),
-                                  ),
-                                  style: GoogleFonts.montserrat(
-                                    fontSize: 14 * ffem,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2175 * ffem / fem,
-                                    color: Color(0xff000000),
-                                  ),
-                                ),
+                              SizedBox(
+                                height: 16,
                               ),
                               TextButton(
                                 onPressed: () {
@@ -375,37 +311,25 @@ class _AddTruckState extends State<AddTruck> {
     );
   }
 
-  void validateAndSubmitForm(BuildContext context) async {
-    // Check if any of the text fields are empty
-    if (_platesController.text.isEmpty ||
-        _capacityController.text.isEmpty ||
-        _pickupCountryController.text.isEmpty ||
-        _pickupCityController.text.isEmpty ||
-        _pickupAddressController.text.isEmpty ||
-        _dropoffCountryController.text.isEmpty ||
-        _dropoffCityController.text.isEmpty ||
-        _dropoffAddressController.text.isEmpty) {
-      // If any fields are empty, show a popup modal notifying the user
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Form Incomplete'),
-            content: Text('Please fill in all the fields.'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-              ),
-            ],
-          );
-        },
-      );
-      return; // Stop the function execution here
-    }
+  Future<void> showLocationPicker(
+      BuildContext context,
+      Function(LatLng, String) onLocationSelected,
+      LatLng initialLocation) async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 1,
+          child: LocationPicker(
+            onLocationSelected: onLocationSelected,
+            initialLocation: initialLocation,
+          ),
+        );
+      },
+    );
+  }
 
+  void validateAndSubmitForm(BuildContext context) async {
     // Check internet connectivity
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -431,6 +355,17 @@ class _AddTruckState extends State<AddTruck> {
       return; // Stop the function execution here
     }
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+
     // Internet connection available, submit the form
     try {
       TrailerController trailerController = TrailerController();
@@ -442,16 +377,25 @@ class _AddTruckState extends State<AddTruck> {
         ownerId = ownerDetails['id'];
       }
 
+      if (_lastSelectedPickupLocation == null ||
+          _lastSelectedDropoffLocation == null) {
+        throw Exception("Pickup and dropoff location can't be blank");
+      }
+
       // Submit the form data
       await trailerController.createTruck(
         plates: _platesController.text,
         capacity: int.tryParse(_capacityController.text) ?? 0,
-        pickup: _pickupCountryController.text,
-        dropoff: _dropoffCountryController.text,
+        pickup:
+            "${_lastSelectedPickupLocation!.latitude}, ${_lastSelectedPickupLocation!.longitude}, $_lastSelectedPickupAddress",
+        dropoff:
+            "${_lastSelectedDropoffLocation!.latitude}, ${_lastSelectedDropoffLocation!.longitude}, $_lastSelectedDropoffAddress",
         status: 'AV',
         driver: ownerId,
         owner: ownerId,
       );
+
+      Navigator.of(context, rootNavigator: true).pop();
 
       // Show the Snackbar with the success message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -467,12 +411,14 @@ class _AddTruckState extends State<AddTruck> {
       });
     } catch (e) {
       // Handle any errors that occur during submission
+      Navigator.of(context, rootNavigator: true).pop();
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Submission Error'),
-            content: Text('There was an error submitting the form: $e'),
+            content:
+                Text('There was an error submitting the form: ${e.toString()}'),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),
