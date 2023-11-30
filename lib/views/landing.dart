@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/login.dart';
 import 'package:tucamion/views/roles.dart';
 
@@ -134,10 +136,14 @@ class Landing extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LogIn()),
-                        );
+                        if (ConnectivityController.hasInternet) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LogIn()),
+                          );
+                        } else {
+                          CustomAlertDialog.showAlertDialog(context);
+                        }
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -173,11 +179,15 @@ class Landing extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Roles()),
-                        );
+                        if (ConnectivityController.hasInternet) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Roles()),
+                          );
+                        } else {
+                          CustomAlertDialog.showAlertDialog(context);
+                        }
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,

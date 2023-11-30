@@ -4,6 +4,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/controller/authservices.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/roles.dart';
 import 'package:tucamion/views/home_page.dart';
@@ -202,10 +204,14 @@ class _LogInState extends State<LogIn> {
                 margin: EdgeInsets.fromLTRB(2 * fem, 0 * fem, 0 * fem, 0 * fem),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Roles()),
-                    );
+                    if (ConnectivityController.hasInternet) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Roles()),
+                      );
+                    } else {
+                      CustomAlertDialog.showAlertDialog(context);
+                    }
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,

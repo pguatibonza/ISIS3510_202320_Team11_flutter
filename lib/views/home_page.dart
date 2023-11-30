@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:tucamion/controller/citycontroller.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/add_accesspoint.dart';
 import 'package:tucamion/controller/api.dart';
 import 'package:tucamion/models/access_point.dart';
@@ -237,7 +239,8 @@ class ListBuilder extends StatelessWidget {
                   borderRadius: BorderRadius.circular(0)),
               child: GestureDetector(
                 onTapUp: (details){
-                  Navigator.push(
+                  if(ConnectivityController.hasInternet){
+                     Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => TripDetails(
@@ -248,6 +251,12 @@ class ListBuilder extends StatelessWidget {
                       ),
                     ),
                   );
+
+                  }
+                  else{
+                    CustomAlertDialog.showAlertDialog(context);
+                  }
+                 
                 },
                 child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -319,11 +328,17 @@ class LoadButton extends StatelessWidget {
       highlightElevation: 0,
       child: Icon(Icons.add),
       onPressed: () {
-        Navigator.push(
+        bool hasInternet=ConnectivityController.hasInternet;
+        if(hasInternet) {
+          Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
                     AddAccessPoint(pointType: 1,pointId: 0)));
+        } 
+        else{
+          CustomAlertDialog.showAlertDialog(context);
+        }
       },
     );
   }

@@ -7,8 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/controller/authservices.dart';
+import 'package:tucamion/controller/connectivityController.dart';
 import 'package:tucamion/controller/truckservices.dart';
 import 'package:tucamion/models/trailer.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/add_truck.dart';
 
 class Trucks extends StatefulWidget {
@@ -275,13 +277,17 @@ class _TrucksState extends State<Trucks> {
   }
 
   _createTruck() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (BuildContext context) => AddTruck(
-                name: widget.ownerEmail,
-              )),
-    );
+    if (ConnectivityController.hasInternet) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => AddTruck(
+                  name: widget.ownerEmail,
+                )),
+      );
+    } else {
+      CustomAlertDialog.showAlertDialog(context);
+    }
   }
 }
 

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/login.dart';
 import 'package:tucamion/views/home_page.dart';
@@ -296,11 +298,15 @@ class _SignUpState extends State<SignUp> {
                           TextButton(
                             // alreadyhaveanaccountsigninihd (17:609)
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LogIn()),
-                              );
+                              if (ConnectivityController.hasInternet) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LogIn()),
+                                );
+                              } else {
+                                CustomAlertDialog.showAlertDialog(context);
+                              }
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
