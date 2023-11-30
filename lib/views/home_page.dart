@@ -186,11 +186,7 @@ class ListTrips extends StatelessWidget {
     String cityName =
         await locationService.getCityFromCoordinates(latitude, longitude);
     return "Welcome back!\n" +
-        name +
-        "\n\n" +
-        "Look for trucks at your city " +
-        cityName +
-        "\n";
+        name ;
   }
 
   Future<LocationData> getLocation() async {
@@ -216,6 +212,9 @@ class ListBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double baseWidth = 360;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double ffem = fem * 0.97;
     return ListView.builder(
       itemCount: myTrips.length,
       itemBuilder: (context, index) {
@@ -268,24 +267,87 @@ class ListBuilder extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(load.type),
-                            Text('${load.weight} kgs '),
+                            Text(load.type, style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color),),
+                            Text('${load.weight} kgs ',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                             SizedBox(height: 10),
-                            Text('Pickup'),
-                            Text(pickup.after.toString()),
+                            Text('Pickup',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                            Text(pickup.after.toString(),style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                             Row(
                               children: [
-                                Text(pickup.address),
-                                Text(pickup.city),
+                                Text(pickup.address,style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                                Text(pickup.city, style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                               ],
                             ),
                             SizedBox(height: 10),
-                            Text('Dropoff'),
+                            Text('Dropoff',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                             Text(dropoff.before.toString()),
                             Row(
                               children: [
-                                Text(dropoff.address),
-                                Text(dropoff.city),
+                                Text(dropoff.address,style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                                Text(dropoff.city,style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                               ],
                             ),
                           ],
