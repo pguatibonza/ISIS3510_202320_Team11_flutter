@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/add_load.dart';
 import 'package:tucamion/controller/api.dart';
 import 'package:tucamion/models/access_point.dart';
@@ -11,7 +13,11 @@ class AddAccessPoint extends StatelessWidget {
   final int pointType;
   final int pointId;
 
-  const AddAccessPoint({required this.pointType, required this.pointId, super.key,});
+  const AddAccessPoint({
+    required this.pointType,
+    required this.pointId,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,10 @@ class AddAccessPoint extends StatelessWidget {
       appBar: AppBar(
         title: Text(_text),
       ),
-      body: AccessPointForm(pointType: pointType, pointId: pointId,),
+      body: AccessPointForm(
+        pointType: pointType,
+        pointId: pointId,
+      ),
     );
   }
 }
@@ -33,9 +42,8 @@ class AddAccessPoint extends StatelessWidget {
 class AccessPointForm extends StatefulWidget {
   final int pointType;
   final int pointId;
-  const AccessPointForm({required this.pointType, required this.pointId, super.key});
-  
-  
+  const AccessPointForm(
+      {required this.pointType, required this.pointId, super.key});
 
   @override
   State<AccessPointForm> createState() => _AccessPointFormState();
@@ -104,26 +112,34 @@ class _AccessPointFormState extends State<AccessPointForm> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                     if (_formKey.currentState!.validate()) {
-                    Future<int> accessPointId = post();
-                    accessPointId.then((result){
-                      int accessPointIdAwaited=result;
-                      if (widget.pointType == 1) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  AddAccessPoint(pointType: 2, pointId: accessPointIdAwaited ,)));
+                    if (ConnectivityController.hasInternet) {
+                      if (_formKey.currentState!.validate()) {
+                        Future<int> accessPointId = post();
+                        accessPointId.then((result) {
+                          int accessPointIdAwaited = result;
+                          if (widget.pointType == 1) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        AddAccessPoint(
+                                          pointType: 2,
+                                          pointId: accessPointIdAwaited,
+                                        )));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) => AddLoad(
+                                          pickupId: widget.pointId,
+                                          dropoffId: accessPointIdAwaited,
+                                        )));
+                          }
+                        });
+                      }
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => AddLoad(
-                                  pickupId: widget.pointId,
-                                  dropoffId: accessPointIdAwaited,)));
+                      CustomAlertDialog.showAlertDialog(context);
                     }
-                    });
-                     }
                   },
                   child: Text('Submit'),
                 ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/signup.dart';
 
 class Roles extends StatelessWidget {
@@ -43,13 +45,17 @@ class Roles extends StatelessWidget {
                     TextButton(
                       // frame48WqM (17:613)
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUp(
-                                    role: 'LO',
-                                  )),
-                        );
+                        if (ConnectivityController.hasInternet) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUp(
+                                      role: 'LO',
+                                    )),
+                          );
+                        } else {
+                          CustomAlertDialog.showAlertDialog(context);
+                        }
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -213,13 +219,17 @@ class Roles extends StatelessWidget {
                     TextButton(
                       // frame47p9D (17:623)
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUp(
-                                    role: 'TO',
-                                  )),
-                        );
+                        if (ConnectivityController.hasInternet) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUp(
+                                      role: 'TO',
+                                    )),
+                          );
+                        } else {
+                          CustomAlertDialog.showAlertDialog(context);
+                        }
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
