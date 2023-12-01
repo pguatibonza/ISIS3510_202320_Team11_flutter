@@ -38,7 +38,6 @@ class _HistoricTripsScreenState extends State<HistoricTripsScreen> {
 
      SharedPreferences prefs = await SharedPreferences.getInstance();
     int userId = int.parse(prefs.getString('id')!);
-    
     print("user $userId");
     final response = await http.get(Uri.parse('$trailers/driver/$userId'));
     if (response.statusCode == 200) {

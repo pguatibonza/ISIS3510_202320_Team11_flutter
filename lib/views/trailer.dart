@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/controller/api.dart';
 import '../models/trailer.dart';
 import 'dart:convert';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 
 class TrailerScreen extends StatefulWidget {
   const TrailerScreen({super.key});
@@ -18,21 +20,25 @@ class _TrailerScreenState extends State<TrailerScreen> {
 
   Future<void> fetchDriver() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     int userId = int.parse(prefs.getString('id')!);
 
     await getTrailer(userId);
   }
 
   Future<void> getTrailer(int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     // ignore: avoid_print
     print("user $userId");
     final response = await http.get(Uri.parse('$trailers/driver/$userId'));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);
+
       if (data.length > 0) {
         setState(() {
           trailer = Trailer.fromJson(data[0]);
+          prefs.setString('trailerId', trailer!.id.toString());
         });
       }
     } else {
@@ -46,7 +52,7 @@ class _TrailerScreenState extends State<TrailerScreen> {
     fetchDriver();
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
     double fem = MediaQuery.of(context).size.width / baseWidth;
@@ -57,27 +63,29 @@ class _TrailerScreenState extends State<TrailerScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Row(
             children: [
               Text(
                 "Your trailer",
                 style: GoogleFonts.montserrat(
-                  fontSize: 35* ffem,
+                  fontSize: 35 * ffem,
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
               ),
               SizedBox(width: 50),
-
               Container(
                 margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 2 * fem),
                 child: TextButton(
                   onPressed: () async {
-                    if (trailer == null) {
-                      print("trailer null");
+                    if (ConnectivityController.hasInternet) {
+                      if (trailer == null) {
+                        print("trailer null");
+                      } else {
+                        await assignTrailer();
+                      }
                     } else {
-                      await assignTrailer();
+                      CustomAlertDialog.showAlertDialog(context);
                     }
                   },
                   style: TextButton.styleFrom(
@@ -89,29 +97,33 @@ class _TrailerScreenState extends State<TrailerScreen> {
                     child: IconButton(
                       enableFeedback: false,
                       onPressed: () async {
-                        if (trailer != null) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Driver has a trailer'),
-                                content: Text(
-                                  'Driver is already assigned to a trailer. Cannot assign.',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('OK'),
+                        if (ConnectivityController.hasInternet) {
+                          if (trailer != null) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Driver has a trailer'),
+                                  content: Text(
+                                    'Driver is already assigned to a trailer. Cannot assign.',
                                   ),
-                                ],
-                              );
-                            },
-                          );
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            print("trailer null");
+                            await assignTrailer();
+                          }
                         } else {
-                          print("trailer null");
-                          await assignTrailer();
+                          CustomAlertDialog.showAlertDialog(context);
                         }
                       },
                       icon: Icon(
@@ -123,16 +135,10 @@ class _TrailerScreenState extends State<TrailerScreen> {
                   ),
                 ),
               ),
-
-
-
-
             ],
           ),
-        
           Row(
             children: [
-              
               if (trailer != null)
                 Expanded(
                   child: Container(
@@ -145,7 +151,8 @@ class _TrailerScreenState extends State<TrailerScreen> {
                           style: GoogleFonts.montserrat(
                             fontSize: 30 * ffem,
                             fontWeight: FontWeight.w600,
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                         ),
                         SizedBox(height: 40),
@@ -153,7 +160,8 @@ class _TrailerScreenState extends State<TrailerScreen> {
                           'ID: ${trailer!.id}',
                           style: GoogleFonts.montserrat(
                             fontSize: 25 * ffem,
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                         ),
                         SizedBox(height: 20),
@@ -161,7 +169,8 @@ class _TrailerScreenState extends State<TrailerScreen> {
                           'Plates: ${trailer!.plates}',
                           style: GoogleFonts.montserrat(
                             fontSize: 25 * ffem,
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                         ),
                         SizedBox(height: 20),
@@ -169,7 +178,8 @@ class _TrailerScreenState extends State<TrailerScreen> {
                           'Capacity: ${trailer!.capacity}',
                           style: GoogleFonts.montserrat(
                             fontSize: 25 * ffem,
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                         ),
                         // Agrega otra información del remolque según sea necesario
@@ -179,7 +189,7 @@ class _TrailerScreenState extends State<TrailerScreen> {
                 ),
               if (trailer == null)
                 Container(
-                  margin: EdgeInsets.only(left: 16 * fem,top: 25*fem),
+                  margin: EdgeInsets.only(left: 16 * fem, top: 25 * fem),
                   child: Text(
                     'You have no current trailer',
                     style: GoogleFonts.montserrat(
@@ -192,12 +202,15 @@ class _TrailerScreenState extends State<TrailerScreen> {
           ),
           SizedBox(height: 16),
           Center(
-            
             child: Container(
               margin: EdgeInsets.only(top: ffem * 40),
               child: ElevatedButton(
                 onPressed: () {
-                  fetchDriver(); // Llama a tu función asíncrona aquí
+                  if (ConnectivityController.hasInternet) {
+                    fetchDriver(); // Llama a tu función asíncrona aquí
+                  } else {
+                    CustomAlertDialog.showAlertDialog(context);
+                  }
                 },
                 child: Text('Reload'),
               ),
@@ -212,26 +225,24 @@ class _TrailerScreenState extends State<TrailerScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int userId = int.parse(prefs.getString('id')!);
 
-    const url='${api}assignTrailer'; 
-    try{
-      final response=await http.put(Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'user_id': userId}),
+    const url = '${api}assignTrailer';
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'user_id': userId}),
       );
       if (response.statusCode == 200) {
-      print('Driver assigned successfully.');
-      getTrailer(userId);
-      // Handle success, if needed
-    } else {
-      print('Failed to assign driver. Status code: ${response.statusCode}');
-      // Handle failure, if needed
-    }
-  } catch (e) {
-    print('Error: $e');
+        print('Driver assigned successfully.');
+        getTrailer(userId);
+
+        // Handle success, if needed
+      } else {
+        print('Failed to assign driver. Status code: ${response.statusCode}');
+        // Handle failure, if needed
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
-
-
-
- 
 }
