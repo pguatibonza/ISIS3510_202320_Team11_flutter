@@ -374,12 +374,12 @@ class _SignUpState extends State<SignUp> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('No Internet Connection'),
-            content: Text(
+            title: const Text('No Internet Connection'),
+            content: const Text(
                 'You are not connected to the internet. Please try again when you have an internet connection.'),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -397,7 +397,7 @@ class _SignUpState extends State<SignUp> {
       builder: (BuildContext context) {
         return WillPopScope(
           onWillPop: () async => false,
-          child: Center(child: CircularProgressIndicator()),
+          child: const Center(child: CircularProgressIndicator()),
         );
       },
     );
@@ -419,7 +419,7 @@ class _SignUpState extends State<SignUp> {
             phone: phone,
             userType: widget.role,
           )
-          .timeout(Duration(seconds: 10));
+          .timeout(const Duration(seconds: 10));
 
       if (result == "ok") {
         // ignore: use_build_context_synchronousl
@@ -434,8 +434,7 @@ class _SignUpState extends State<SignUp> {
             ),
             (Route<dynamic> route) => false,
           );
-        }
-        else if (widget.role == "DR") {
+        } else if (widget.role == "DR") {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -445,8 +444,7 @@ class _SignUpState extends State<SignUp> {
             ),
             (Route<dynamic> route) => false,
           );
-        } 
-        else {
+        } else {
           // ignore: use_build_context_synchronously
           Navigator.pushAndRemoveUntil(
             context,
@@ -470,12 +468,12 @@ class _SignUpState extends State<SignUp> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error'),
-            content:
-                Text('Something went wrong with our services. Try again later'),
+            title: const Text('Error'),
+            content: const Text(
+                'Something went wrong while conneting to our services. Try again later'),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -486,8 +484,27 @@ class _SignUpState extends State<SignUp> {
       );
       return;
     } catch (e) {
-      // Handle other exceptions
-      // You can show another dialog or handle the exception as needed
+      print(e);
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text(
+                'Something went wrong while conneting to our services. Try again later'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
     }
   }
 }
