@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tucamion/models/access_point.dart';
 import 'package:tucamion/models/load.dart';
@@ -44,7 +45,10 @@ class _TripDetailsState extends State<TripDetails> {
   
   @override
   Widget build(BuildContext context) {
-    print("${widget.load.id}pppp");
+     double baseWidth = 360;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double ffem = fem * 0.97;
+
 
     return Scaffold(
   appBar: AppBar(title:Text("Trip Info"),),
@@ -81,17 +85,73 @@ class _TripDetailsState extends State<TripDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Load Type: ${widget.load.type}'),
-                Text('Trailer Type: ${widget.load.trailerType}'),
-                Text('Weight: ${widget.load.weight} lbs'),
+                Text('Load Type: ${widget.load.type}',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                Text('Trailer Type: ${widget.load.trailerType}',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                Text('Weight: ${widget.load.weight} lbs',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                 if (widget.load.volume != null)
-                  Text('Volume: ${widget.load.volume} cubic ft'),
-                Text('Pickup Address: ${widget.pickup.address}, ${widget.pickup.city}, ${widget.pickup.country}'),
-                Text('Dropoff Address: ${widget.dropoff.address}, ${widget.dropoff.city}, ${widget.dropoff.country}'),
+                  Text('Volume: ${widget.load.volume} cubic ft',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                Text('Pickup Address: ${widget.pickup.address}, ${widget.pickup.city}, ${widget.pickup.country}',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                Text('Dropoff Address: ${widget.dropoff.address}, ${widget.dropoff.city}, ${widget.dropoff.country}',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                 if (widget.trip.trailer==null)
-                    Text('We have not found a Truck available yet')
+                    Text('We have not found a Truck available yet',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color))
                 else
-                    Text('We have found a truck a truck available'),
+                    Text('We have found a truck a truck available',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
               ],
             ),
           ),

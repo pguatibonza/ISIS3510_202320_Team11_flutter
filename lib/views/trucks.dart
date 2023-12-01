@@ -108,7 +108,8 @@ class _TrucksState extends State<Trucks> {
             Map<String, dynamic> pickupAP = await trailerController
                 .getAccessPointById(tripsData[0]['pickup']);
 
-            trailer = Trailer(
+            trailer = Trailer
+              ( id: trailerData['id'],
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup:
@@ -121,6 +122,7 @@ class _TrucksState extends State<Trucks> {
                 isAvailable: isAvailable);
           } else {
             trailer = Trailer(
+              id:trailerData['id'],
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup: "Not on service",

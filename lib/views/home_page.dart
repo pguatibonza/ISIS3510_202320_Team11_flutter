@@ -14,7 +14,6 @@ import 'package:tucamion/models/load.dart';
 import 'package:tucamion/models/trip.dart';
 import 'package:tucamion/controller/locationcontroller.dart';
 import 'package:tucamion/views/trip_details.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
@@ -47,7 +46,7 @@ class _HomePageState extends State<HomePage> {
   try {
     FileInfo? fileInfo = await cacheManager.getFileFromCache('Trips');
 
-    if (fileInfo != null && fileInfo.file.existsSync() ) {
+    if (fileInfo != null && !ConnectivityController.hasInternet) {
       // Data is found in the cache
       final cachedData = await fileInfo.file.readAsString();
       final data = json.decode(cachedData);
@@ -56,7 +55,7 @@ class _HomePageState extends State<HomePage> {
       print("Data found in the cache");
 
     } else {
-      print("No data found in the cache");
+      print("Retrieving data ");
       final response = await http.get(Uri.parse(trips));
       final data = json.decode(response.body);
       
@@ -135,7 +134,7 @@ class ListTrips extends StatelessWidget {
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const LoadButton(),
-        bottomNavigationBar: NavigationBar(),
+        bottomNavigationBar: const NavigationBar(),
         appBar: AppBar(),
         body: Container(
           padding: EdgeInsets.fromLTRB(5, 50, 5, 0),
@@ -186,11 +185,7 @@ class ListTrips extends StatelessWidget {
     String cityName =
         await locationService.getCityFromCoordinates(latitude, longitude);
     return "Welcome back!\n" +
-        name +
-        "\n\n" +
-        "Look for trucks at your city " +
-        cityName +
-        "\n";
+        name ;
   }
 
   Future<LocationData> getLocation() async {
@@ -216,6 +211,9 @@ class ListBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double baseWidth = 360;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double ffem = fem * 0.97;
     return ListView.builder(
       itemCount: myTrips.length,
       itemBuilder: (context, index) {
@@ -268,24 +266,87 @@ class ListBuilder extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(load.type),
-                            Text('${load.weight} kgs '),
+                            Text(load.type, style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color),),
+                            Text('${load.weight} kgs ',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                             SizedBox(height: 10),
-                            Text('Pickup'),
-                            Text(pickup.after.toString()),
+                            Text('Pickup',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                            Text(pickup.after.toString(),style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                             Row(
                               children: [
-                                Text(pickup.address),
-                                Text(pickup.city),
+                                Text(pickup.address,style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                                Text(pickup.city, style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                               ],
                             ),
                             SizedBox(height: 10),
-                            Text('Dropoff'),
+                            Text('Dropoff',style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                             Text(dropoff.before.toString()),
                             Row(
                               children: [
-                                Text(dropoff.address),
-                                Text(dropoff.city),
+                                Text(dropoff.address,style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                                Text(dropoff.city,style: GoogleFonts.montserrat(
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
                               ],
                             ),
                           ],

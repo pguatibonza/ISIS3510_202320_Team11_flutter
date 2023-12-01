@@ -189,7 +189,7 @@ class _LoadFormState extends State<LoadForm> {
       if (response.statusCode == 201) {
         print("Trip created");
        // ignore: use_build_context_synchronously
-       Navigator.push(
+       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
