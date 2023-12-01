@@ -410,6 +410,7 @@ class _AddTruckState extends State<AddTruck> {
         Navigator.of(context).pop();
       });
     } catch (e) {
+      print(e);
       // Handle any errors that occur during submission
       Navigator.of(context, rootNavigator: true).pop();
       showDialog(

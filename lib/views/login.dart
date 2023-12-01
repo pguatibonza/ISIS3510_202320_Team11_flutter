@@ -12,6 +12,8 @@ import 'package:tucamion/views/home_page.dart';
 import 'package:tucamion/views/theme/app_colors.dart';
 import 'package:tucamion/controller/usercontroller.dart';
 
+import 'homepage_driver.dart';
+
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
 
@@ -330,11 +332,15 @@ class _LogInState extends State<LogIn> {
         final userInfo = await authService.getNameByEmail(email);
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => userType == "LO"
-                ? HomePage(name: email)
-                : HomePageTruck(name: email),
-          ),
+          MaterialPageRoute(builder: (BuildContext context) {
+            if (userType == "LO") {
+              return HomePage(name: email);
+            } else if (userType == "DR") {
+              return HomePageDriver(name: email);
+            } else {
+              return HomePageTruck(name: email);
+            }
+          }),
           (Route<dynamic> route) => false,
         );
       } else {

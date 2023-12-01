@@ -87,13 +87,14 @@ class TrailerController {
     required int driver,
     required int owner,
   }) async {
-    final url = Uri.parse('$baseUrl/trailers');
+    final url = Uri.parse('${baseUrl}trailers');
     final response = await http.post(
       url,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
+        'isAvailable': true,
         'plates': plates,
         'capacity': capacity,
         'pickup': pickup,
@@ -104,6 +105,7 @@ class TrailerController {
         'owner': owner,
       }),
     );
+    print(response.statusCode);
 
     if (response.statusCode == 201) {
       return response;

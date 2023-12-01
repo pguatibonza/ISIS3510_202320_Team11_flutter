@@ -137,7 +137,19 @@ class Roles extends StatelessWidget {
                     ),
                     TextButton(
                       // frame45dwu (17:618)
-                      onPressed: () {},
+                      onPressed: () {
+                        if (ConnectivityController.hasInternet) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUp(
+                                      role: 'DR',
+                                    )),
+                          );
+                        } else {
+                          CustomAlertDialog.showAlertDialog(context);
+                        }
+                      },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                       ),

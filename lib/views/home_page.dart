@@ -14,7 +14,6 @@ import 'package:tucamion/models/load.dart';
 import 'package:tucamion/models/trip.dart';
 import 'package:tucamion/controller/locationcontroller.dart';
 import 'package:tucamion/views/trip_details.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
@@ -47,7 +46,7 @@ class _HomePageState extends State<HomePage> {
   try {
     FileInfo? fileInfo = await cacheManager.getFileFromCache('Trips');
 
-    if (fileInfo != null && fileInfo.file.existsSync() ) {
+    if (fileInfo != null && !ConnectivityController.hasInternet) {
       // Data is found in the cache
       final cachedData = await fileInfo.file.readAsString();
       final data = json.decode(cachedData);
@@ -56,7 +55,7 @@ class _HomePageState extends State<HomePage> {
       print("Data found in the cache");
 
     } else {
-      print("No data found in the cache");
+      print("Retrieving data ");
       final response = await http.get(Uri.parse(trips));
       final data = json.decode(response.body);
       
@@ -135,7 +134,7 @@ class ListTrips extends StatelessWidget {
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const LoadButton(),
-        bottomNavigationBar: NavigationBar(),
+        bottomNavigationBar: const NavigationBar(),
         appBar: AppBar(),
         body: Container(
           padding: EdgeInsets.fromLTRB(5, 50, 5, 0),

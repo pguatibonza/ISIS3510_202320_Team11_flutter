@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/controller/connectivityController.dart';
 import 'package:tucamion/views/CustomAlertDialog.dart';
+import 'package:tucamion/views/homepage_driver.dart';
 import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/login.dart';
 import 'package:tucamion/views/home_page.dart';
@@ -433,7 +434,19 @@ class _SignUpState extends State<SignUp> {
             ),
             (Route<dynamic> route) => false,
           );
-        } else {
+        }
+        else if (widget.role == "DR") {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePageDriver(
+                name: email,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        } 
+        else {
           // ignore: use_build_context_synchronously
           Navigator.pushAndRemoveUntil(
             context,

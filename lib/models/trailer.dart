@@ -1,4 +1,5 @@
 class Trailer {
+  int id;
   String plates;
   int capacity;
   String pickup;
@@ -9,6 +10,7 @@ class Trailer {
   bool isAvailable;
 
   Trailer({
+    required this.id,
     required this.plates,
     required this.capacity,
     required this.pickup,
@@ -34,6 +36,7 @@ class Trailer {
   // Creates a Trailer instance from a map.
   factory Trailer.fromJson(Map<String, dynamic> json) {
     return Trailer(
+      id: json['id'],
       plates: json['plates'],
       capacity: json['capacity'],
       pickup: json['pickup'],
