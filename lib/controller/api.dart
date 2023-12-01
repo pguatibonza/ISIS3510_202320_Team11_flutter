@@ -7,3 +7,5 @@ const String trailers = '${api}trailers';
 const String users = '${api}users';
 const String apiKeyMaps = 'AIzaSyAEslYLhthoMaNOKlKZmpigb90V47ElCRY';
 const String api2 = 'https://tucamion.azurewebsites.net/';
+// ignore: constant_identifier_names
+const String TRIPSDRIVER='${api}trips/trailer';

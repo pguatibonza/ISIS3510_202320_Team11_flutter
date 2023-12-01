@@ -20,10 +20,10 @@ class _TrailerScreenState extends State<TrailerScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int userId = int.parse(prefs.getString('id')!);
 
-    await getDriver(userId);
+    await getTrailer(userId);
   }
 
-  Future<void> getDriver(int userId) async {
+  Future<void> getTrailer(int userId) async {
     // ignore: avoid_print
     print("user $userId");
     final response = await http.get(Uri.parse('$trailers/driver/$userId'));
@@ -220,7 +220,7 @@ class _TrailerScreenState extends State<TrailerScreen> {
       );
       if (response.statusCode == 200) {
       print('Driver assigned successfully.');
-      getDriver(userId);
+      getTrailer(userId);
       // Handle success, if needed
     } else {
       print('Failed to assign driver. Status code: ${response.statusCode}');
