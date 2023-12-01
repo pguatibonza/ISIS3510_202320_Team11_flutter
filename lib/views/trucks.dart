@@ -12,6 +12,7 @@ import 'package:tucamion/controller/truckservices.dart';
 import 'package:tucamion/models/trailer.dart';
 import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/add_truck.dart';
+import 'package:tucamion/views/truck_detail.dart';
 
 class Trucks extends StatefulWidget {
   const Trucks({super.key, required this.ownerEmail});
@@ -70,7 +71,10 @@ class _TrucksState extends State<Trucks> {
     if (cachedData != null) {
       List<dynamic> trailersData = json.decode(cachedData);
       setState(() {
+        print("intentandoooo");
         trailers = trailersData.map((data) => Trailer.fromJson(data)).toList();
+        print("traileeeers");
+        print(trailers);
         isLoading = false;
       });
       _showNoInternetDialog();
@@ -108,8 +112,8 @@ class _TrucksState extends State<Trucks> {
             Map<String, dynamic> pickupAP = await trailerController
                 .getAccessPointById(tripsData[0]['pickup']);
 
-            trailer = Trailer
-              ( id: trailerData['id'],
+            trailer = Trailer(
+                id: trailerData['id'],
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup:
@@ -122,7 +126,7 @@ class _TrucksState extends State<Trucks> {
                 isAvailable: isAvailable);
           } else {
             trailer = Trailer(
-              id:trailerData['id'],
+                id: trailerData['id'],
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup: "Not on service",
@@ -265,8 +269,10 @@ class _TrucksState extends State<Trucks> {
                         child: Column(
                           children: trailers
                               .map((trailer) => TruckCard(
-                                  trailer: trailer,
-                                  isAvailable: trailer.isAvailable))
+                                    trailer: trailer,
+                                    isAvailable: trailer.isAvailable,
+                                    context: context,
+                                  ))
                               .toList(),
                         ),
                       ),
@@ -295,10 +301,14 @@ class _TrucksState extends State<Trucks> {
 
 class TruckCard extends StatelessWidget {
   const TruckCard(
-      {super.key, required this.isAvailable, required this.trailer});
+      {super.key,
+      required this.isAvailable,
+      required this.trailer,
+      required this.context});
 
   final bool isAvailable;
   final Trailer trailer;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +316,7 @@ class TruckCard extends StatelessWidget {
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
     return TextButton(
-      onPressed: () {},
+      onPressed: _goToDetail,
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
       ),
@@ -718,5 +728,19 @@ class TruckCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _goToDetail() async {
+    if (ConnectivityController.hasInternet) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => TruckDetail(
+                  trailer: trailer,
+                )),
+      );
+    } else {
+      CustomAlertDialog.showAlertDialog(context);
+    }
   }
 }

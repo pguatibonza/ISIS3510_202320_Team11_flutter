@@ -23,6 +23,7 @@ class Trailer {
 
   // Converts a Trailer instance into a map.
   Map<String, dynamic> toJson() => {
+        'id': id,
         'plates': plates,
         'capacity': capacity,
         'pickup': pickup,
