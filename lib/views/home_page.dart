@@ -18,6 +18,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
 class HomePage extends StatefulWidget {
+  
   const HomePage({super.key, required this.name});
 
   final String name;
@@ -110,6 +111,7 @@ Future<void> updateListsFromData(List<dynamic> data) async {
       myAccessPoints: myAccessPoints,
       myLoads: myLoads,
       name: widget.name,
+
     );
   }
 }
@@ -132,10 +134,25 @@ class ListTrips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        
+
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const LoadButton(),
         bottomNavigationBar: const NavigationBar(),
-        appBar: AppBar(),
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.refresh,
+                color: Color.fromARGB(255, 57, 32, 196),
+              ),
+              onPressed: () {
+                
+              },
+            ),]
+              
+            ),
+        
         body: Container(
           padding: EdgeInsets.fromLTRB(5, 50, 5, 0),
           child: Column(
