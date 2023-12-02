@@ -140,7 +140,6 @@ class _AddTruckState extends State<AddTruck> {
                                   fontSize: 16 * ffem,
                                   fontWeight: FontWeight.w400,
                                   height: 1.2175 * ffem / fem,
-                                  color: Color(0xff000000),
                                 ),
                               ),
                               SizedBox(
@@ -203,7 +202,6 @@ class _AddTruckState extends State<AddTruck> {
                                   fontSize: 16 * ffem,
                                   fontWeight: FontWeight.w400,
                                   height: 1.2175 * ffem / fem,
-                                  color: Color(0xff000000),
                                 ),
                               ),
                               SizedBox(
