@@ -411,10 +411,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                 SizedBox(
                   height: 30,
                 ),
-                _buildMapView(),
-                SizedBox(
-                  height: 30,
-                ),
+
                 _trip == null
                     ? Text(
                         'No trip in progress. Come back later when a trip has started.',
@@ -428,6 +425,10 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                       )
                     : Column(
                         children: [
+                          _buildMapView(),
+                          SizedBox(
+                            height: 30,
+                          ),
                           Text(
                             "Pick up and drop off info",
                             style: GoogleFonts.montserrat(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/views/home_page.dart';
+import 'package:tucamion/views/homepage_driver.dart';
 import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/theme/app_theme.dart';
 import 'package:tucamion/views/landing.dart';
@@ -65,7 +66,11 @@ class _MyAppState extends State<MyApp> implements Observer {
               // Navigate based on userType
               return userType == "LO"
                   ? HomePage(name: email)
-                  : HomePageTruck(name: email);
+                  : userType == "TO"
+                      ? HomePageTruck(name: email)
+                      : HomePageDriver(
+                          name: email,
+                        );
             } else {
               // If snapshot.data is null, return Landing page
               return Landing();
