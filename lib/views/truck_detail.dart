@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tucamion/controller/loadcontroller.dart';
 import 'package:tucamion/controller/truckservices.dart';
 import 'package:tucamion/controller/usercontroller.dart';
@@ -52,7 +54,7 @@ class _TruckDetailState extends State<TruckDetail> {
             children: [
               Details(trailer: widget.trailer),
               TruckCurrentTrip(trailer: widget.trailer),
-              Icon(Icons.directions_bike),
+              TruckHistory(trailer: widget.trailer),
             ],
           ),
         ),
@@ -194,7 +196,26 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
   Load? _load;
   AccessPoint? _pickup;
   AccessPoint? _dropoff;
+  LatLng? _pickupLatLng;
+  LatLng? _dropoffLatLng;
+
   late Future<void> _loadFuture;
+
+  Future<Location> geocodeLocation(AccessPoint accessPoint) async {
+    try {
+      List<Location> locations = await locationFromAddress(
+          '${accessPoint.address}, ${accessPoint.city}, ${accessPoint.country}');
+      if (locations.isNotEmpty) {
+        return locations.first;
+      } else {
+        // Return a default location or throw an error
+        throw Exception('No locations found for the given address.');
+      }
+    } catch (e) {
+      print("Geocoding error: $e");
+      throw Exception('Failed to geocode location: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -295,6 +316,13 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
           setState(() {
             _pickup = pickup;
           });
+          if (_pickup != null) {
+            var geocodedPickup = await geocodeLocation(_pickup!);
+            setState(() {
+              _pickupLatLng =
+                  LatLng(geocodedPickup.latitude, geocodedPickup.longitude);
+            });
+          }
         }
 
         // Fetch Dropoff Access Point
@@ -305,6 +333,13 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
           setState(() {
             _dropoff = dropoff;
           });
+          if (_dropoff != null) {
+            var geocodedDropoff = await geocodeLocation(_dropoff!);
+            setState(() {
+              _dropoffLatLng =
+                  LatLng(geocodedDropoff.latitude, geocodedDropoff.longitude);
+            });
+          }
         }
       } catch (e) {
         showDialog(
@@ -374,7 +409,11 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                       color: Theme.of(context).textTheme.bodyMedium?.color),
                 ),
                 SizedBox(
-                  height: 60,
+                  height: 30,
+                ),
+                _buildMapView(),
+                SizedBox(
+                  height: 30,
                 ),
                 _trip == null
                     ? Text(
@@ -576,6 +615,401 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMapView() {
+    late GoogleMapController mapController;
+
+    LatLngBounds boundsFromLatLngList(List<LatLng> list) {
+      assert(list.isNotEmpty);
+      double? x0, x1, y0, y1;
+      for (LatLng latLng in list) {
+        if (x0 == null) {
+          x0 = x1 = latLng.latitude;
+          y0 = y1 = latLng.longitude;
+        } else {
+          if (latLng.latitude > x1!) x1 = latLng.latitude;
+          if (latLng.latitude < x0) x0 = latLng.latitude;
+          if (latLng.longitude > y1!) y1 = latLng.longitude;
+          if (latLng.longitude < y0!) y0 = latLng.longitude;
+        }
+      }
+      return LatLngBounds(
+          northeast: LatLng(x1!, y1!), southwest: LatLng(x0!, y0!));
+    }
+
+    void onMapCreated(GoogleMapController controller) {
+      mapController = controller;
+      if (_pickupLatLng != null && _dropoffLatLng != null) {
+        // Calculate bounds
+        LatLngBounds bounds =
+            boundsFromLatLngList([_pickupLatLng!, _dropoffLatLng!]);
+
+        // Use a delayed Future to ensure the map is rendered
+        Future.delayed(Duration(milliseconds: 500), () {
+          mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
+        });
+      }
+    }
+
+    Set<Polyline> createRoute() {
+      Set<Polyline> route = {};
+      if (_pickupLatLng != null && _dropoffLatLng != null) {
+        route.add(Polyline(
+          polylineId: PolylineId("route"),
+          visible: true,
+          points: [_pickupLatLng!, _dropoffLatLng!],
+          width: 4,
+          color: Colors.blue,
+        ));
+      }
+      return route;
+    }
+
+    Set<Marker> markers = {};
+
+    if (_pickupLatLng != null && _dropoffLatLng != null) {
+      markers.add(Marker(
+        markerId: MarkerId("pickup"),
+        position: _pickupLatLng!,
+        infoWindow: InfoWindow(title: "Pick Up Location"),
+      ));
+      markers.add(Marker(
+        markerId: MarkerId("dropoff"),
+        position: _dropoffLatLng!,
+        infoWindow: InfoWindow(title: "Drop Off Location"),
+      ));
+    }
+
+    print(_pickupLatLng);
+
+    return Container(
+      height: 300,
+      child: GoogleMap(
+        polylines: createRoute(),
+        onMapCreated: onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _pickupLatLng!, // This will be adjusted shortly
+          zoom: 12.0,
+        ),
+        markers: markers,
+      ),
+    );
+  }
+}
+
+class TruckHistory extends StatefulWidget {
+  const TruckHistory({super.key, required this.trailer});
+
+  final Trailer trailer;
+  @override
+  _TruckHistoryState createState() => _TruckHistoryState();
+}
+
+class _TruckHistoryState extends State<TruckHistory> {
+  final TrailerController _trailerController = TrailerController();
+  Future<void>? _loadFuture;
+  List<Trip> _trips = [];
+  Map<int, AccessPoint> _accessPoints = {};
+  Map<int, Load> _loads = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFuture = _loadData();
+  }
+
+  Future<void> _loadData() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      // Handle no internet connection
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Internet Connection'),
+            content: Text(
+                'You are not connected to the internet. Please try again when you have an internet connection.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    var tripsResponse = await _trailerController.getTripByTrailerIdAndStatus(
+        widget.trailer.id, "DE");
+    if (tripsResponse is List) {
+      _trips =
+          tripsResponse.map((tripJson) => Trip.fromJson(tripJson)).toList();
+      await _fetchRelatedData();
+    }
+  }
+
+  Future<void> _fetchRelatedData() async {
+    for (var trip in _trips) {
+      var pickupResponse =
+          await TrailerController().getAccessPointById(trip.pickup);
+      var dropoffResponse =
+          await TrailerController().getAccessPointById(trip.dropoff);
+      var loadResponse = await LoadController().getLoadById(trip.load);
+
+      if (pickupResponse is Map<String, dynamic>) {
+        _accessPoints[trip.pickup] = AccessPoint.fromJson(pickupResponse);
+      }
+      if (dropoffResponse is Map<String, dynamic>) {
+        _accessPoints[trip.dropoff] = AccessPoint.fromJson(dropoffResponse);
+      }
+      if (loadResponse is Map<String, dynamic>) {
+        _loads[trip.load] = Load.fromJson(loadResponse);
+      }
+    }
+  }
+
+  Widget _buildContent() {
+    return RefreshIndicator(
+      onRefresh: () async {
+        _loadFuture = _loadData(); // Refresh data
+        await _loadFuture;
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.0), // Adjust padding as needed
+            child: Text(
+              'Trip History',
+              style: TextStyle(
+                fontSize: 24.0, // Adjust font size as needed
+                fontWeight: FontWeight.bold,
+                // Other text styling as needed
+              ),
+            ),
+          ),
+          Flexible(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: _trips.length,
+              itemBuilder: (context, index) {
+                final trip = _trips[index];
+                final pickup = _accessPoints[trip.pickup];
+                final dropoff = _accessPoints[trip.dropoff];
+                final load = _loads[trip.load];
+
+                if (pickup != null && dropoff != null && load != null) {
+                  return TruckHistoryCard(
+                    pickup: pickup,
+                    dropoff: dropoff,
+                    load: load,
+                  );
+                } else {
+                  return Container(); // Placeholder for missing data
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _loadFuture,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return _buildContent();
+        }
+      },
+    );
+  }
+}
+
+class TruckHistoryCard extends StatelessWidget {
+  const TruckHistoryCard({
+    super.key,
+    required this.pickup,
+    required this.dropoff,
+    required this.load,
+  });
+
+  final AccessPoint pickup;
+  final AccessPoint dropoff;
+  final Load load;
+
+  @override
+  Widget build(BuildContext context) {
+    double baseWidth = 360;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double ffem = fem * 0.97;
+    return Container(
+      padding: EdgeInsets.zero,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+            16.01 * fem, 11.75 * fem, 16.15 * fem, 11.57 * fem),
+        decoration: BoxDecoration(
+          border: Border.all(color: Color.fromARGB(255, 192, 192, 192)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              // frame568Xc (73:1081)
+              margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 0 * fem),
+              width: 275 * fem,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    // frame55ekr (73:1082)
+                    margin: EdgeInsets.fromLTRB(
+                        0 * fem, 0 * fem, 0 * fem, 15.01 * fem),
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          load.type,
+                          style: GoogleFonts.montserrat(
+                            fontSize: 14 * ffem,
+                            fontWeight: FontWeight.w600,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(children: [
+                          Icon(
+                            Icons.calendar_month,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            size: 14,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "Pick up time: ${pickup.after.toString().split(".")[0]}",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14 * ffem,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2175 * ffem / fem,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.color,
+                              ),
+                            ),
+                          ),
+                        ]),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(children: [
+                          Icon(
+                            Icons.calendar_month,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            size: 14,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "Dropoff time: ${dropoff.after.toString().split(".")[0]}",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14 * ffem,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2175 * ffem / fem,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.color,
+                              ),
+                            ),
+                          ),
+                        ]),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(children: [
+                          Icon(
+                            Icons.location_on,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            size: 14,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "Pickup location: ${pickup.address}, ${pickup.city}, ${pickup.country}",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14 * ffem,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2175 * ffem / fem,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.color,
+                              ),
+                            ),
+                          ),
+                        ]),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(children: [
+                          Icon(
+                            Icons.location_on,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            size: 14,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "Dropoff location: ${dropoff.address}, ${dropoff.city}, ${dropoff.country}",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14 * ffem,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2175 * ffem / fem,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.color,
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
