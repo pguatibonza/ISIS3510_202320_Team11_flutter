@@ -11,9 +11,9 @@ import 'package:tucamion/controller/truckservices.dart';
 import 'package:tucamion/views/landing.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key, required this.name});
+  const Profile({super.key});
 
-  final String name;
+  
 
   @override
   State<StatefulWidget> createState() {

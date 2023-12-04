@@ -45,7 +45,7 @@ class _HomePageTruckState extends State<HomePageTruck> {
       Trucks(
         ownerEmail: widget.name,
       ),
-      Profile(name: widget.name)
+      Profile()
     ];
   }
 

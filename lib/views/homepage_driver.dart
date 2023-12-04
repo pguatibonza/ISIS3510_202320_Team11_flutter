@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/views/current_trip.dart';
 import 'package:tucamion/views/historic_trips.dart';
+import 'package:tucamion/views/profile.dart';
 import 'package:tucamion/views/trailer.dart';
 
 class HomePageDriver extends StatefulWidget {
@@ -19,6 +20,8 @@ class _HomePageDriverState extends State<HomePageDriver> {
     const CurrentTrip(),
     const HistoricTripsScreen(),
     const TrailerScreen(),
+    const Profile()
+
   ];
 
   @override
@@ -40,6 +43,8 @@ class _HomePageDriverState extends State<HomePageDriver> {
         ),
         body: _pages[currentIndex],
         bottomNavigationBar: BottomNavigationBar(
+
+            backgroundColor: Color(0xFF2E85FF),
             currentIndex: currentIndex,
             onTap: (index) {
               setState(() {
@@ -49,11 +54,13 @@ class _HomePageDriverState extends State<HomePageDriver> {
             },
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.fire_truck_sharp), label: 'Current Trip'),
+                  icon: Icon(Icons.fire_truck_sharp, color: Color(0xFF2E85FF),), label: 'Current Trip'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.trip_origin), label: 'Trips'),
+                  icon: Icon(Icons.trip_origin, color: Color(0xFF2E85FF)), label: 'Trips',),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.car_rental_rounded), label: 'Trailer')
+                  icon: Icon(Icons.car_rental_rounded, color: Color(0xFF2E85FF)), label: 'Trailer'),
+                BottomNavigationBarItem(icon: Icon(Icons.settings, color: Color(0xFF2E85FF)),label:'Settings')
+
             ]));
   }
 }
