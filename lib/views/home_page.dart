@@ -168,6 +168,7 @@ List<Load> fetchedLoads = [];
         }
               
             },
+          )]),
         body: pages[pageIndex]);
   }
  
