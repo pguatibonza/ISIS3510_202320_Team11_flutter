@@ -24,6 +24,7 @@ List<Load> myLoads = [];
 final cacheManager = DefaultCacheManager();
 
 class HomePage extends StatefulWidget {
+  
   const HomePage({super.key, required this.name});
 
   final String name;
@@ -99,6 +100,7 @@ List<Load> fetchedLoads = [];
           await http.get(Uri.parse('$accessPoints/${t.pickup}'));
       final dataAccess = json.decode(pickupResponse.body);
 
+
       final a = AccessPoint.fromJson(dataAccess);
       fetchedAccesspoints.add(a);
 
@@ -121,6 +123,7 @@ List<Load> fetchedLoads = [];
         myAccessPoints = fetchedAccesspoints;
         myLoads = fetchedLoads;
       });
+
   }
 
 
@@ -130,6 +133,8 @@ List<Load> fetchedLoads = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        
+
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: const LoadButton(),
         bottomNavigationBar: BottomNavigationBar(
@@ -163,8 +168,6 @@ List<Load> fetchedLoads = [];
         }
               
             },
-          ),
-        ]),
         body: pages[pageIndex]);
   }
  

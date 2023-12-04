@@ -21,6 +21,7 @@ class _HomePageDriverState extends State<HomePageDriver> {
     const HistoricTripsScreen(),
     const TrailerScreen(),
     const Profile()
+
   ];
 
   @override
@@ -42,6 +43,7 @@ class _HomePageDriverState extends State<HomePageDriver> {
         ),
         body: _pages[currentIndex],
         bottomNavigationBar: BottomNavigationBar(
+
             backgroundColor: Color(0xFF2E85FF),
             currentIndex: currentIndex,
             onTap: (index) {
@@ -58,6 +60,7 @@ class _HomePageDriverState extends State<HomePageDriver> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.car_rental_rounded, color: Color(0xFF2E85FF)), label: 'Trailer'),
                 BottomNavigationBarItem(icon: Icon(Icons.settings, color: Color(0xFF2E85FF)),label:'Settings')
+
             ]));
   }
 }
