@@ -63,24 +63,18 @@ class _TruckDetailState extends State<TruckDetail> {
   }
 }
 
-class Details extends StatefulWidget {
+class Details extends StatelessWidget {
   const Details({super.key, required this.trailer});
 
   final Trailer trailer;
 
   @override
-  _DetailsState createState() => _DetailsState();
-}
-
-class _DetailsState extends State<Details> {
-  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 40, left: 20, right: 20),
+      padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Your widgets go here
             Text(
               'Truck detail',
               style: GoogleFonts.montserrat(
@@ -89,9 +83,7 @@ class _DetailsState extends State<Details> {
                   height: 1.2000000477,
                   color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
-            SizedBox(
-              height: 60,
-            ),
+            const SizedBox(height: 60),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -105,11 +97,9 @@ class _DetailsState extends State<Details> {
                           height: 1.2000000477,
                           color: Theme.of(context).textTheme.bodyMedium?.color),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    const SizedBox(width: 20),
                     Text(
-                      widget.trailer.plates,
+                      trailer.plates,
                       style: GoogleFonts.montserrat(
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
@@ -118,9 +108,7 @@ class _DetailsState extends State<Details> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Text(
@@ -131,11 +119,9 @@ class _DetailsState extends State<Details> {
                           height: 1.2000000477,
                           color: Theme.of(context).textTheme.bodyMedium?.color),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    const SizedBox(width: 20),
                     Text(
-                      widget.trailer.capacity.toString() + " KG",
+                      trailer.capacity.toString() + " KG",
                       style: GoogleFonts.montserrat(
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
@@ -144,9 +130,7 @@ class _DetailsState extends State<Details> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Text(
@@ -157,11 +141,9 @@ class _DetailsState extends State<Details> {
                           height: 1.2000000477,
                           color: Theme.of(context).textTheme.bodyMedium?.color),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    const SizedBox(width: 20),
                     Text(
-                      widget.trailer.isAvailable ? "Yes" : "No",
+                      trailer.isAvailable ? "Yes" : "No",
                       style: GoogleFonts.montserrat(
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
@@ -170,9 +152,9 @@ class _DetailsState extends State<Details> {
                     ),
                   ],
                 ),
+                // Add more widgets as needed
               ],
-            )
-            // Add more widgets as needed
+            ),
           ],
         ),
       ),
@@ -231,12 +213,12 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('No Internet Connection'),
-            content: Text(
+            title: const Text('No Internet Connection'),
+            content: const Text(
                 'You are not connected to the internet. Please try again when you have an internet connection.'),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -273,11 +255,11 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error'),
+            title: const Text('Error'),
             content: Text(e.toString()),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -346,11 +328,11 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Error'),
+              title: const Text('Error'),
               content: Text(e.toString()),
               actions: <Widget>[
                 TextButton(
-                  child: Text('OK'),
+                  child: const Text('OK'),
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
@@ -369,7 +351,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
       future: _loadFuture,
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
@@ -387,12 +369,12 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
         await _loadFuture;
       },
       child: ListView(
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: <Widget>[
           // Your content widgets go here
           // If you have only a few widgets and need to ensure the list covers the screen:
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 40,
               right: 20,
               left: 20,
@@ -408,7 +390,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                       height: 1.2000000477,
                       color: Theme.of(context).textTheme.bodyMedium?.color),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
 
@@ -426,7 +408,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                     : Column(
                         children: [
                           _buildMapView(),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Text(
@@ -441,7 +423,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Text(
@@ -456,7 +438,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -471,7 +453,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -486,7 +468,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -501,7 +483,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 40,
                           ),
                           Text(
@@ -516,7 +498,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Text(
@@ -531,7 +513,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -546,7 +528,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -561,7 +543,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 40,
                           ),
                           Text(
@@ -576,7 +558,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Text(
@@ -591,7 +573,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -606,7 +588,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
                                     ?.color),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                         ],
@@ -649,7 +631,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
             boundsFromLatLngList([_pickupLatLng!, _dropoffLatLng!]);
 
         // Use a delayed Future to ensure the map is rendered
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
         });
       }
@@ -659,7 +641,7 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
       Set<Polyline> route = {};
       if (_pickupLatLng != null && _dropoffLatLng != null) {
         route.add(Polyline(
-          polylineId: PolylineId("route"),
+          polylineId: const PolylineId("route"),
           visible: true,
           points: [_pickupLatLng!, _dropoffLatLng!],
           width: 4,
@@ -673,14 +655,14 @@ class _TruckCurrentTripState extends State<TruckCurrentTrip> {
 
     if (_pickupLatLng != null && _dropoffLatLng != null) {
       markers.add(Marker(
-        markerId: MarkerId("pickup"),
+        markerId: const MarkerId("pickup"),
         position: _pickupLatLng!,
-        infoWindow: InfoWindow(title: "Pick Up Location"),
+        infoWindow: const InfoWindow(title: "Pick Up Location"),
       ));
       markers.add(Marker(
-        markerId: MarkerId("dropoff"),
+        markerId: const MarkerId("dropoff"),
         position: _dropoffLatLng!,
-        infoWindow: InfoWindow(title: "Drop Off Location"),
+        infoWindow: const InfoWindow(title: "Drop Off Location"),
       ));
     }
 
@@ -730,12 +712,12 @@ class _TruckHistoryState extends State<TruckHistory> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('No Internet Connection'),
-            content: Text(
+            title: const Text('No Internet Connection'),
+            content: const Text(
                 'You are not connected to the internet. Please try again when you have an internet connection.'),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
@@ -784,20 +766,19 @@ class _TruckHistoryState extends State<TruckHistory> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.all(16.0), // Adjust padding as needed
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
               'Trip History',
               style: TextStyle(
-                fontSize: 24.0, // Adjust font size as needed
+                fontSize: 24.0,
                 fontWeight: FontWeight.bold,
-                // Other text styling as needed
               ),
             ),
           ),
           Flexible(
             child: ListView.builder(
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: _trips.length,
               itemBuilder: (context, index) {
                 final trip = _trips[index];
@@ -807,12 +788,14 @@ class _TruckHistoryState extends State<TruckHistory> {
 
                 if (pickup != null && dropoff != null && load != null) {
                   return TruckHistoryCard(
+                    key:
+                        ValueKey(trip.id), // Assuming each trip has a unique ID
                     pickup: pickup,
                     dropoff: dropoff,
                     load: load,
                   );
                 } else {
-                  return Container(); // Placeholder for missing data
+                  return const SizedBox.shrink(); // Improved placeholder
                 }
               },
             ),
@@ -828,7 +811,7 @@ class _TruckHistoryState extends State<TruckHistory> {
       future: _loadFuture,
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
@@ -862,7 +845,7 @@ class TruckHistoryCard extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(
             16.01 * fem, 11.75 * fem, 16.15 * fem, 11.57 * fem),
         decoration: BoxDecoration(
-          border: Border.all(color: Color.fromARGB(255, 192, 192, 192)),
+          border: Border.all(color: const Color.fromARGB(255, 192, 192, 192)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -891,7 +874,7 @@ class TruckHistoryCard extends StatelessWidget {
                                 Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Row(children: [
@@ -901,7 +884,7 @@ class TruckHistoryCard extends StatelessWidget {
                                 Theme.of(context).textTheme.bodyMedium?.color,
                             size: 14,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
@@ -919,7 +902,7 @@ class TruckHistoryCard extends StatelessWidget {
                             ),
                           ),
                         ]),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(children: [
@@ -929,7 +912,7 @@ class TruckHistoryCard extends StatelessWidget {
                                 Theme.of(context).textTheme.bodyMedium?.color,
                             size: 14,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
@@ -947,7 +930,7 @@ class TruckHistoryCard extends StatelessWidget {
                             ),
                           ),
                         ]),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(children: [
@@ -957,7 +940,7 @@ class TruckHistoryCard extends StatelessWidget {
                                 Theme.of(context).textTheme.bodyMedium?.color,
                             size: 14,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
@@ -975,7 +958,7 @@ class TruckHistoryCard extends StatelessWidget {
                             ),
                           ),
                         ]),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(children: [
@@ -985,7 +968,7 @@ class TruckHistoryCard extends StatelessWidget {
                                 Theme.of(context).textTheme.bodyMedium?.color,
                             size: 14,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Expanded(
