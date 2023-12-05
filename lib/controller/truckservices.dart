@@ -87,13 +87,14 @@ class TrailerController {
     required int driver,
     required int owner,
   }) async {
-    final url = Uri.parse('$baseUrl/trailers');
+    final url = Uri.parse('${baseUrl}trailers');
     final response = await http.post(
       url,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
+        'isAvailable': true,
         'plates': plates,
         'capacity': capacity,
         'pickup': pickup,
@@ -104,13 +105,26 @@ class TrailerController {
         'owner': owner,
       }),
     );
+    print(response.statusCode);
 
     if (response.statusCode == 201) {
       return response;
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load truck data');
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+      List<String> errorMessages = [];
+
+      responseBody.forEach((key, value) {
+        if (value is List) {
+          // Join list values with a comma and prepend the key
+          String errorMessage = key + ': ' + value.join(', ');
+          errorMessages.add(errorMessage);
+        } else {
+          // Convert the value to string and prepend the key
+          String errorMessage = key + ': ' + value.toString();
+          errorMessages.add(errorMessage);
+        }
+      });
+      throw Exception('Failed to load truck data: ' + errorMessages.join('; '));
     }
   }
 }

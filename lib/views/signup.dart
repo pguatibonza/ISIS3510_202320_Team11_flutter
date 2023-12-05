@@ -1,5 +1,11 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
+import 'package:tucamion/views/homepage_driver.dart';
 import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/login.dart';
 import 'package:tucamion/views/home_page.dart';
@@ -40,9 +46,6 @@ class _SignUpState extends State<SignUp> {
           // signinCNb (17:598)
           padding: EdgeInsets.fromLTRB(40 * fem, 72 * fem, 45 * fem, 77 * fem),
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -56,7 +59,6 @@ class _SignUpState extends State<SignUp> {
                     fontSize: 24 * ffem,
                     fontWeight: FontWeight.w600,
                     height: 1.2000000477 * ffem / fem,
-                    color: const Color(0xff232323),
                   ),
                 ),
               ),
@@ -297,11 +299,15 @@ class _SignUpState extends State<SignUp> {
                           TextButton(
                             // alreadyhaveanaccountsigninihd (17:609)
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LogIn()),
-                              );
+                              if (ConnectivityController.hasInternet) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LogIn()),
+                                );
+                              } else {
+                                CustomAlertDialog.showAlertDialog(context);
+                              }
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -310,11 +316,13 @@ class _SignUpState extends State<SignUp> {
                               textAlign: TextAlign.center,
                               text: TextSpan(
                                 style: GoogleFonts.montserrat(
-                                  fontSize: 14 * ffem,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.2189999989 * ffem / fem,
-                                  color: const Color(0xff232323),
-                                ),
+                                    fontSize: 14 * ffem,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.2189999989 * ffem / fem,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color),
                                 children: [
                                   TextSpan(
                                     text: 'Already have an account?',
@@ -322,7 +330,6 @@ class _SignUpState extends State<SignUp> {
                                       fontSize: 14 * ffem,
                                       fontWeight: FontWeight.w400,
                                       height: 1.2175 * ffem / fem,
-                                      color: const Color(0xff232323),
                                     ),
                                   ),
                                   TextSpan(
@@ -331,7 +338,6 @@ class _SignUpState extends State<SignUp> {
                                       fontSize: 14 * ffem,
                                       fontWeight: FontWeight.w700,
                                       height: 1.2175 * ffem / fem,
-                                      color: const Color(0xff232323),
                                     ),
                                   ),
                                   TextSpan(
@@ -361,54 +367,144 @@ class _SignUpState extends State<SignUp> {
   }
 
   _signUp() async {
-    String name = _nameController.text;
-    String email = _emailController.text;
-    String phone = _phoneController.text;
-    String password = _passwordController.text;
-    String confirmPassword = _passwordConfirmController.text;
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // No internet connection, show a popup modal notifying the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('No Internet Connection'),
+            content: const Text(
+                'You are not connected to the internet. Please try again when you have an internet connection.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return; // Stop the function execution here
+    }
 
-    String result = await _userController.register(
-      name: name,
-      lastName: ".",
-      email: email,
-      password: password,
-      passwordConfirmation: confirmPassword,
-      phone: phone,
-      userType: widget.role,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: const Center(child: CircularProgressIndicator()),
+        );
+      },
     );
 
-    if (result == "ok") {
-      // ignore: use_build_context_synchronousl
+    try {
+      String name = _nameController.text;
+      String email = _emailController.text;
+      String phone = _phoneController.text;
+      String password = _passwordController.text;
+      String confirmPassword = _passwordConfirmController.text;
 
-      if (widget.role == "LO") {
-        print(widget.role);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePage(
-              name: email,
+      String result = await _userController
+          .register(
+            name: name,
+            lastName: ".",
+            email: email,
+            password: password,
+            passwordConfirmation: confirmPassword,
+            phone: phone,
+            userType: widget.role,
+          )
+          .timeout(const Duration(seconds: 10));
+
+      if (result == "ok") {
+        // ignore: use_build_context_synchronousl
+        _userController.SaveUser(email);
+        if (widget.role == "LO") {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePage(
+                name: email,
+              ),
             ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+            (Route<dynamic> route) => false,
+          );
+        } else if (widget.role == "DR") {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePageDriver(
+                name: email,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        } else {
+          // ignore: use_build_context_synchronously
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePageTruck(
+                name: email,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        }
       } else {
-        // ignore: use_build_context_synchronously
-        print(widget.role);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePageTruck(
-              name: email,
-            ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _errorMessage = result;
+        });
       }
-    } else {
-      // Set the error message and rebuild the widget
-      setState(() {
-        _errorMessage = result;
-      });
+    } on TimeoutException catch (_) {
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text(
+                'Something went wrong while conneting to our services. Try again later'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    } catch (e) {
+      print(e);
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text(
+                'Something went wrong while conneting to our services. Try again later'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
     }
   }
 }

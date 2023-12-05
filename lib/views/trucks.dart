@@ -7,9 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tucamion/controller/authservices.dart';
+import 'package:tucamion/controller/connectivityController.dart';
 import 'package:tucamion/controller/truckservices.dart';
 import 'package:tucamion/models/trailer.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/add_truck.dart';
+import 'package:tucamion/views/truck_detail.dart';
 
 class Trucks extends StatefulWidget {
   const Trucks({super.key, required this.ownerEmail});
@@ -68,7 +71,10 @@ class _TrucksState extends State<Trucks> {
     if (cachedData != null) {
       List<dynamic> trailersData = json.decode(cachedData);
       setState(() {
+        print("intentandoooo");
         trailers = trailersData.map((data) => Trailer.fromJson(data)).toList();
+        print("traileeeers");
+        print(trailers);
         isLoading = false;
       });
       _showNoInternetDialog();
@@ -107,6 +113,7 @@ class _TrucksState extends State<Trucks> {
                 .getAccessPointById(tripsData[0]['pickup']);
 
             trailer = Trailer(
+                id: trailerData['id'],
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup:
@@ -119,6 +126,7 @@ class _TrucksState extends State<Trucks> {
                 isAvailable: isAvailable);
           } else {
             trailer = Trailer(
+                id: trailerData['id'],
                 plates: trailerData['plates'],
                 capacity: trailerData['capacity'],
                 pickup: "Not on service",
@@ -188,9 +196,7 @@ class _TrucksState extends State<Trucks> {
         child: Container(
           // trucksYP4 (73:1075)
           width: double.infinity,
-          decoration: BoxDecoration(
-            color: Color(0xffffffff),
-          ),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -217,11 +223,13 @@ class _TrucksState extends State<Trucks> {
                             child: Text(
                               'Trucks',
                               style: GoogleFonts.montserrat(
-                                fontSize: 24 * ffem,
-                                fontWeight: FontWeight.w600,
-                                height: 1.2000000477 * ffem / fem,
-                                color: Color(0xff232323),
-                              ),
+                                  fontSize: 24 * ffem,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2000000477 * ffem / fem,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color),
                             ),
                           ),
                           Container(
@@ -261,8 +269,10 @@ class _TrucksState extends State<Trucks> {
                         child: Column(
                           children: trailers
                               .map((trailer) => TruckCard(
-                                  trailer: trailer,
-                                  isAvailable: trailer.isAvailable))
+                                    trailer: trailer,
+                                    isAvailable: trailer.isAvailable,
+                                    context: context,
+                                  ))
                               .toList(),
                         ),
                       ),
@@ -275,22 +285,30 @@ class _TrucksState extends State<Trucks> {
   }
 
   _createTruck() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (BuildContext context) => AddTruck(
-                name: widget.ownerEmail,
-              )),
-    );
+    if (ConnectivityController.hasInternet) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => AddTruck(
+                  name: widget.ownerEmail,
+                )),
+      );
+    } else {
+      CustomAlertDialog.showAlertDialog(context);
+    }
   }
 }
 
 class TruckCard extends StatelessWidget {
   const TruckCard(
-      {super.key, required this.isAvailable, required this.trailer});
+      {super.key,
+      required this.isAvailable,
+      required this.trailer,
+      required this.context});
 
   final bool isAvailable;
   final Trailer trailer;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +316,7 @@ class TruckCard extends StatelessWidget {
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
     return TextButton(
-      onPressed: () {},
+      onPressed: _goToDetail,
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
       ),
@@ -308,8 +326,7 @@ class TruckCard extends StatelessWidget {
         width: 360.18 * fem,
         height: 199.32 * fem,
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xffefebeb)),
-          color: Color(0xffffffff),
+          border: Border.all(color: Color.fromARGB(255, 192, 192, 192)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +357,8 @@ class TruckCard extends StatelessWidget {
                               fontSize: 14 * ffem,
                               fontWeight: FontWeight.w600,
                               height: 1.2175 * ffem / fem,
-                              color: Color(0xff232323),
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium?.color,
                             ),
                           ),
                         ),
@@ -370,11 +388,13 @@ class TruckCard extends StatelessWidget {
                                 child: Text(
                                   'Pickup ',
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 12 * ffem,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.2000000477 * ffem / fem,
-                                    color: Color(0xff999999),
-                                  ),
+                                      fontSize: 12 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color),
                                 ),
                               ),
                               Container(
@@ -404,7 +424,10 @@ class TruckCard extends StatelessWidget {
                                             height: 11.68 * fem,
                                             child: Icon(
                                               Icons.calendar_month,
-                                              color: Colors.grey[900],
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.color,
                                               size: 14,
                                             ),
                                           ),
@@ -419,12 +442,15 @@ class TruckCard extends StatelessWidget {
                                                         .split("/")[0]
                                                         .split("T")[0],
                                                 style: GoogleFonts.montserrat(
-                                                  fontSize: 12 * ffem,
-                                                  fontWeight: FontWeight.w400,
-                                                  height:
-                                                      1.2000000477 * ffem / fem,
-                                                  color: Color(0xff232323),
-                                                ),
+                                                    fontSize: 12 * ffem,
+                                                    fontWeight: FontWeight.w400,
+                                                    height: 1.2000000477 *
+                                                        ffem /
+                                                        fem,
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium
+                                                        ?.color),
                                                 overflow:
                                                     TextOverflow.ellipsis),
                                           ),
@@ -453,7 +479,10 @@ class TruckCard extends StatelessWidget {
                                             height: 11.49 * fem,
                                             child: Icon(
                                               Icons.location_on,
-                                              color: Colors.grey[900],
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.color,
                                               size: 14,
                                             ),
                                           ),
@@ -464,12 +493,14 @@ class TruckCard extends StatelessWidget {
                                                   : trailer.pickup
                                                       .split("|")[0],
                                               style: GoogleFonts.montserrat(
-                                                fontSize: 12 * ffem,
-                                                fontWeight: FontWeight.w400,
-                                                height:
-                                                    1.2000000477 * ffem / fem,
-                                                color: Color(0xff232323),
-                                              ),
+                                                  fontSize: 12 * ffem,
+                                                  fontWeight: FontWeight.w400,
+                                                  height:
+                                                      1.2000000477 * ffem / fem,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.color),
                                               overflow: TextOverflow.ellipsis),
                                         ],
                                       ),
@@ -495,11 +526,13 @@ class TruckCard extends StatelessWidget {
                                 child: Text(
                                   'Destination',
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 12 * ffem,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.2000000477 * ffem / fem,
-                                    color: Color(0xff999999),
-                                  ),
+                                      fontSize: 12 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2000000477 * ffem / fem,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color),
                                 ),
                               ),
                               Container(
@@ -529,7 +562,10 @@ class TruckCard extends StatelessWidget {
                                             height: 11.68 * fem,
                                             child: Icon(
                                               Icons.calendar_month,
-                                              color: Colors.grey[900],
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.color,
                                               size: 14,
                                             ),
                                           ),
@@ -542,11 +578,14 @@ class TruckCard extends StatelessWidget {
                                                     .split("/")[0]
                                                     .split("T")[0],
                                             style: GoogleFonts.montserrat(
-                                              fontSize: 12 * ffem,
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.2000000477 * ffem / fem,
-                                              color: Color(0xff232323),
-                                            ),
+                                                fontSize: 12 * ffem,
+                                                fontWeight: FontWeight.w400,
+                                                height:
+                                                    1.2000000477 * ffem / fem,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.color),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
@@ -574,7 +613,10 @@ class TruckCard extends StatelessWidget {
                                             height: 11.49 * fem,
                                             child: Icon(
                                               Icons.location_on,
-                                              color: Colors.grey[900],
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.color,
                                               size: 14,
                                             ),
                                           ),
@@ -585,12 +627,14 @@ class TruckCard extends StatelessWidget {
                                                   : trailer.dropoff
                                                       .split("|")[0],
                                               style: GoogleFonts.montserrat(
-                                                fontSize: 12 * ffem,
-                                                fontWeight: FontWeight.w400,
-                                                height:
-                                                    1.2000000477 * ffem / fem,
-                                                color: Color(0xff232323),
-                                              ),
+                                                  fontSize: 12 * ffem,
+                                                  fontWeight: FontWeight.w400,
+                                                  height:
+                                                      1.2000000477 * ffem / fem,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.color),
                                               overflow: TextOverflow.ellipsis),
                                         ],
                                       ),
@@ -672,7 +716,7 @@ class TruckCard extends StatelessWidget {
                       onPressed: () {},
                       icon: Icon(
                         Icons.arrow_forward_ios,
-                        color: Colors.grey[900],
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         size: 24,
                       ),
                     ),
@@ -684,5 +728,19 @@ class TruckCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _goToDetail() async {
+    if (ConnectivityController.hasInternet) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => TruckDetail(
+                  trailer: trailer,
+                )),
+      );
+    } else {
+      CustomAlertDialog.showAlertDialog(context);
+    }
   }
 }

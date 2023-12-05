@@ -1,11 +1,18 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tucamion/controller/authservices.dart';
+import 'package:tucamion/controller/connectivityController.dart';
+import 'package:tucamion/views/CustomAlertDialog.dart';
 import 'package:tucamion/views/homepage_truck.dart';
 import 'package:tucamion/views/roles.dart';
 import 'package:tucamion/views/home_page.dart';
 import 'package:tucamion/views/theme/app_colors.dart';
 import 'package:tucamion/controller/usercontroller.dart';
+
+import 'homepage_driver.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -36,9 +43,6 @@ class _LogInState extends State<LogIn> {
           padding:
               EdgeInsets.fromLTRB(37 * fem, 143 * fem, 38 * fem, 123 * fem),
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xffffffff),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -52,7 +56,6 @@ class _LogInState extends State<LogIn> {
                     fontSize: 24 * ffem,
                     fontWeight: FontWeight.w600,
                     height: 1.2000000477 * ffem / fem,
-                    color: const Color(0xff232323),
                   ),
                 ),
               ),
@@ -203,10 +206,14 @@ class _LogInState extends State<LogIn> {
                 margin: EdgeInsets.fromLTRB(2 * fem, 0 * fem, 0 * fem, 0 * fem),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Roles()),
-                    );
+                    if (ConnectivityController.hasInternet) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Roles()),
+                      );
+                    } else {
+                      CustomAlertDialog.showAlertDialog(context);
+                    }
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -215,11 +222,10 @@ class _LogInState extends State<LogIn> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: GoogleFonts.montserrat(
-                        fontSize: 14 * ffem,
-                        fontWeight: FontWeight.w400,
-                        height: 1.2189999989 * ffem / fem,
-                        color: const Color(0xff232323),
-                      ),
+                          fontSize: 14 * ffem,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2189999989 * ffem / fem,
+                          color: Theme.of(context).textTheme.bodyMedium?.color),
                       children: [
                         TextSpan(
                           text: 'Don\'t ',
@@ -227,7 +233,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -236,7 +241,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -245,7 +249,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -254,7 +257,6 @@ class _LogInState extends State<LogIn> {
                             fontSize: 14 * ffem,
                             fontWeight: FontWeight.w400,
                             height: 1.2175 * ffem / fem,
-                            color: const Color(0xff232323),
                           ),
                         ),
                         TextSpan(
@@ -279,46 +281,98 @@ class _LogInState extends State<LogIn> {
   }
 
   _login() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    final authService = AuthService();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // No internet connection, show a popup modal notifying the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Internet Connection'),
+            content: Text(
+                'You are not connected to the internet. Please try again when you have an internet connection.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return; // Stop the function execution here
+    }
 
-    String result = await _userController.authenticate(email, password);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
 
-    if (result == "ok") {
-      // ignore: use_build_context_synchronously
-      _userController.SaveUser(email);
-      print(UserController.savedUser);
-      final userType = await authService.getUserTypeByEmail(email);
-      final userInfo = await authService.getNameByEmail(email);
-      if (userType == "LO") {
+    try {
+      String email = _emailController.text;
+      String password = _passwordController.text;
+
+      String result = await _userController
+          .authenticate(email, password)
+          .timeout(Duration(seconds: 10));
+      final authService = AuthService();
+
+      if (result == "ok") {
         // ignore: use_build_context_synchronously
-        // ignore: use_build_context_synchronously
+        _userController.SaveUser(email);
+        final userType = await authService.getUserTypeByEmail(email);
+        final userInfo = await authService.getNameByEmail(email);
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(
-                    name: email,
-                  )),
+          MaterialPageRoute(builder: (BuildContext context) {
+            if (userType == "LO") {
+              return HomePage(name: email);
+            } else if (userType == "DR") {
+              return HomePageDriver(name: email);
+            } else {
+              return HomePageTruck(name: email);
+            }
+          }),
           (Route<dynamic> route) => false,
         );
       } else {
-        // ignore: use_build_context_synchronously
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePageTruck(
-              name: email,
-            ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _errorMessage = result;
+        });
       }
-    } else {
-      // Set the error message and rebuild the widget
-      setState(() {
-        _errorMessage = result;
-      });
+    } on TimeoutException catch (_) {
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content:
+                Text('Something went wrong with our services. Try again later'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    } catch (e) {
+      // Handle other exceptions
+      // You can show another dialog or handle the exception as needed
     }
   }
 }
